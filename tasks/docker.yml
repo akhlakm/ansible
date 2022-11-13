@@ -1,0 +1,75 @@
+# Ensure docker is installed
+---
+
+-   name: Docker
+    when: docker_required
+    block:
+        -   name: docker installed
+            shell: docker --version
+            register: cmd_result
+            failed_when: "cmd_result.rc != 0"
+            changed_when: false
+
+    rescue:
+        -   name: uninstall podman
+            when: ansible_os_family == "RedHat"
+            dnf: 
+                name: 
+                    - podman 
+                    - runc
+                state: absent
+
+        -   name: download get-docker
+            get_url:
+                url: https://get.docker.com
+                dest: /tmp/get-docker.sh
+                mode: 0744
+
+        -   name: execute get-docker
+            become: true
+            environment: 
+                CHANNEL: stable
+            shell: /tmp/get-docker.sh > get-docker.log
+
+        -   name: docker has been installed
+            become: true
+            shell: docker --version
+            register: cmd_result
+            failed_when: "cmd_result.rc != 0"
+
+        -   name: create docker local fs directory
+            file:
+                path: "{{ docker_fs_directory }}"
+                mode: 0755
+                state: directory
+
+        -   name: docker group exists
+            become: true
+            group:
+                name: docker 
+                state: present
+        
+        -   name: ansible user a member of the docker group 
+            become: true
+            user:
+                name: "{{ ansible_user }}"
+                groups: docker
+                append: yes
+
+-   name: Docker Service
+    when: docker_required
+    block:
+        -   name: docker service started
+            become: true 
+            service:
+                name: docker
+                state: started
+                enabled: true
+
+    rescue:
+        -   name: docker service error
+            debug:
+                msg: |
+                    Docker service is not running.
+                    Please check manually.
+

@@ -24,3 +24,8 @@
                     host: {{ inventory_hostname }} ip: {{ ansible_host }}
                     groups: {{ group_names }} os: {{ ansible_os_family }}
 
+        -   name: Check docker
+            import_tasks: tasks/docker.yml
+            tags: ["docker"]
+
+        

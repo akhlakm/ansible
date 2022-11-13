@@ -9,8 +9,12 @@ all:
         manage_brew_packages: false
         manage_apt_packages: true
         manage_dnf_packages: true
+        docker_required: false
+        docker_fs_directory: "/home/{{ ansible_user }}/docker"
     children:
         server:
+            vars:
+                docker_required: true
             hosts:
                 envypro:
                     ansible_host: 192.168.0.102
