@@ -2,6 +2,7 @@
 ---
 - name: Run docker compose services
   when: "'server' in group_names"
+  become: true
   block:
     -   name: create docker dirs
         file:

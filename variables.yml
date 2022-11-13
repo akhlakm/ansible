@@ -23,10 +23,11 @@ dnf_package_list:
 docker_compose_list:
     - nginx-proxy
     - adguard
+    - portainer
 
 docker_network: dockernet
 
 etc_hosts:
     - envypro:192.168.0.102
-    - media.envy.pro:192.168.0.102
     - dns.server:192.168.0.102
+    - portainer.envypro:192.168.0.102
