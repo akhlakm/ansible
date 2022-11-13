@@ -13,4 +13,5 @@
         # Note: do not add ports other than the basic ones.
         # Run a reverse proxy server to give access to more ports.
         - { port: "80", proto: "tcp", state: "enabled", zone: "public" }
+        - { port: "81", proto: "tcp", state: "enabled", zone: "public" }
         - { port: "443", proto: "tcp", state: "enabled", zone: "public" }

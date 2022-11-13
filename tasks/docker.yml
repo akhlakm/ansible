@@ -73,3 +73,10 @@
                     Docker service is not running.
                     Please check manually.
 
+-   name: Docker SDK
+    when: docker_required
+    become: true
+    pip:
+        name:
+            - docker
+            - docker-compose

@@ -1,0 +1,23 @@
+# Run a reverse proxy server
+---
+- name: Run docker compose services
+  when: "'server' in group_names"
+  block:
+    -   name: create docker dirs
+        file:
+            path: "{{docker_fs_directory}}/{{ item }}"
+            mode: 0755
+            state: directory
+        loop: "{{ docker_compose_list }}"
+
+    -   name: copy docker compose files
+        copy:
+            src: "files/docker-compose/{{ item }}.yml"
+            dest: "{{docker_fs_directory}}/{{ item }}/docker-compose.yml"
+        loop: "{{ docker_compose_list }}"
+    
+    -   name: docker compose running
+        docker_compose:
+            project_src: "{{docker_fs_directory}}/{{ item }}"
+            state: present
+        loop: "{{ docker_compose_list }}"

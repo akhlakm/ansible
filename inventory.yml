@@ -1,8 +1,8 @@
 ---
 all:
-    # Set default variable values.
-    # Override on specific host or group.
     vars:
+        # Set default variable values.
+        # Override on specific host or group.
         ansible_user: akhlak
         ansible_port: 22
         ansible_connection: ssh
@@ -10,6 +10,8 @@ all:
         manage_apt_packages: true
         manage_dnf_packages: true
         docker_required: false
+        # Directory to keep all docker related files.
+        # Necessary for easier backup.
         docker_fs_directory: "/home/{{ ansible_user }}/docker"
     children:
         server:

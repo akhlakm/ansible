@@ -16,3 +16,9 @@ dnf_package_list:
     - curl
     - git 
     - rsync
+    - python3-pip
+
+# List of docker containers to run on the servers.
+# Place docker-compose.yml in files/docker-compose/.
+docker_compose_list:
+    - nginx-proxy
