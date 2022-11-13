@@ -25,7 +25,7 @@
         -   name: sudoers file of ansible user
             become: true
             template:
-                src: files/sudoer.j2
+                src: files/system/sudoer.j2
                 dest: "/etc/sudoers.d/{{ ansible_user }}"
                 owner: root
                 group: root
@@ -34,11 +34,11 @@
         -   name: bashrc
             when: ansible_os_family == "Debian"
             copy:
-                src: files/bashrc.sh
+                src: files/system/bashrc.sh
                 dest: "/home/{{ ansible_user }}/.bashrc"
 
         -   name: bashrc
             when: ansible_os_family == "RedHat"
             copy:
-                src: files/bashrc.sh
+                src: files/system/bashrc.sh
                 dest: /etc/profile.d/bashrc.sh
