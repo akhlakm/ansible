@@ -29,11 +29,11 @@
             tags: ["network"]
 
         -   name: Check docker
-            import_tasks: tasks/docker.yml
+            import_tasks: tasks/docker_install.yml
             tags: ["docker"]
             
         -   name: Check docker compose
-            import_tasks: tasks/docker.compose.yml
+            import_tasks: tasks/docker_compose.yml
             tags: ["docker"]
 
         -   name: Check firewall rules
