@@ -3,6 +3,24 @@
 ---
 
 -   hosts: all
+    name: Main playbook
+
+    vars_files:
+        - variables.yml
+
+    pre_tasks:
+        -   name: Sanity checks
+            import_tasks: tasks/sanity.yml
+            tags: ["always", "sanity"]
+
+        -   name: Ensure packages
+            import_tasks: tasks/packages.yml
+            tags: ["packages", "update"]
+
     tasks:
-        - debug:
-            msg: "host: {{ inventory_hostname }} ip: {{ ansible_host }}"
+        -   name: Host information
+            debug:
+                msg: |
+                    host: {{ inventory_hostname }} ip: {{ ansible_host }}
+                    groups: {{ group_names }} os: {{ ansible_os_family }}
+

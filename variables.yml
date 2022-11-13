@@ -1,0 +1,18 @@
+---
+server_usb_mount_point: /mnt
+
+brew_package_list:
+    - ansible
+    - ansible-lint
+    - bash 
+    - git 
+    - htop 
+    - rsync
+
+brew_cask_list:
+    - miniforge
+
+dnf_package_list:
+    - curl
+    - git 
+    - rsync

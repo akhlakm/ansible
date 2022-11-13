@@ -1,0 +1,12 @@
+# Check if we can access sudo
+---
+-   name: Sanity - user mode
+    become: false
+    debug:
+        msg: "user mode"
+
+-   name: Sanity - become mode 
+    become: true
+    debug:
+        msg: "become mode"
+
