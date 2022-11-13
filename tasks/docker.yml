@@ -56,11 +56,15 @@
                 groups: docker
                 append: yes
 
+        -   name: create docker network
+            become: true
+            shell: "docker network create {{ docker_network }}"
+
 -   name: Docker Service
     when: docker_required
     block:
         -   name: docker service started
-            become: true 
+            become: true
             service:
                 name: docker
                 state: started

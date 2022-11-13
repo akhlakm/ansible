@@ -28,6 +28,10 @@
             import_tasks: tasks/useracc.yml
             tags: ["bash", "user"]
 
+        -   name: Check local hosts
+            import_tasks: tasks/etc_hosts.yml
+            tags: ["network"]
+
         -   name: Check docker
             import_tasks: tasks/docker.yml
             tags: ["docker"]

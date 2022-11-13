@@ -1,0 +1,8 @@
+# add dns entries to etc/hosts
+---
+-   name: etc/hosts ok
+    become: true
+    lineinfile:
+        path: /etc/hosts
+        line: "{{ item.split(':')[1] }}    {{ item.split(':')[0] }}"
+    loop: "{{ etc_hosts }}"
