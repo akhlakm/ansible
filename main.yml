@@ -9,10 +9,6 @@
         - variables.yml
 
     pre_tasks:
-        -   name: Sanity checks
-            import_tasks: tasks/sanity.yml
-            tags: ["always", "sanity"]
-
         -   name: Ensure packages
             import_tasks: tasks/packages.yml
             tags: ["packages", "update"]
@@ -42,5 +38,5 @@
 
         -   name: Check firewall rules
             import_tasks: tasks/firewall.yml
-            tags: ["firewall"]
+            tags: ["network"]
         

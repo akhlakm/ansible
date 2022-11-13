@@ -22,9 +22,11 @@ dnf_package_list:
 # Place docker-compose.yml in files/docker-compose/.
 docker_compose_list:
     - nginx-proxy
+    - adguard
 
 docker_network: dockernet
 
 etc_hosts:
     - envypro:192.168.0.102
     - media.envy.pro:192.168.0.102
+    - dns.server:192.168.0.102

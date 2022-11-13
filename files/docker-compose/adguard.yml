@@ -1,0 +1,20 @@
+---
+version: '3.3'
+services:
+    adguardhome:
+        container_name: adguardhome
+        restart: unless-stopped
+        volumes:
+            - './work:/opt/adguardhome/work'
+            - './conf:/opt/adguardhome/conf'
+        ports:
+            - '53:53/tcp'
+            - '53:53/udp'
+        expose:
+            - "3000"
+        image: adguard/adguardhome
+
+networks:
+    default:
+        external: true
+        name: dockernet
