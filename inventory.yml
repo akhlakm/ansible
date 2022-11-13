@@ -1,0 +1,21 @@
+---
+all:
+    # Set default variable values.
+    # Override on specific host or group.
+    vars:
+        ansible_user: akhlak
+        ansible_port: 22
+        ansible_connection: ssh
+    children:
+        server:
+            hosts:
+                envypro:
+                    ansible_host: 192.168.0.102
+        local:
+            vars:
+                ansible_connection: local
+            hosts:
+                macair:
+                    ansible_host: localhost
+                    ansible_python_interpreter: /opt/homebrew/Caskroom/miniforge/base/bin/python
+
