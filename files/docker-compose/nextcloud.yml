@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+    pgdb:
+        image: postgres:14.1-alpine
+        restart: always
+        expose:
+            - 5432
+        volumes:
+            - ./pgdb:/var/lib/postgresql/data
+            - /etc/localtime:/etc/localtime:ro
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+
+    redis:
+        image: redis
+        restart: always
+        command: redis-server --requirepass redpass
+        expose:
+            - 6379
+
+    nextcloud:
+        image: nextcloud
+        restart: always
+        expose:
+            - 80
+        volumes:
+            - ./data:/var/www/html/data
+            - /etc/localtime:/etc/localtime:ro
+        environment:
+            - REDIS_HOST_PASSWORD=redpass
+        depends_on:
+            - pgdb
+            - redis
+
+networks:
+    default:
+        external: true
+        name: dockernet
