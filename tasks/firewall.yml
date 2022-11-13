@@ -1,0 +1,16 @@
+# Allow/deny ports via firewalld or ufw
+---
+-   name: FirewallD rules
+    when: ansible_os_family == "RedHat"
+    become: true
+    ansible.posix.firewalld:
+        permanent: yes 
+        immediate: yes 
+        port: "{{item.port}}/{{item.proto}}"
+        state: "{{item.state}}"
+        zone: "{{item.zone}}"
+    with_items:
+        # Note: do not add ports other than the basic ones.
+        # Run a reverse proxy server to give access to more ports.
+        - { port: "80", proto: "tcp", state: "enabled", zone: "public" }
+        - { port: "443", proto: "tcp", state: "enabled", zone: "public" }

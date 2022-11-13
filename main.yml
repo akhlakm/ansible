@@ -24,11 +24,15 @@
                     host: {{ inventory_hostname }} ip: {{ ansible_host }}
                     groups: {{ group_names }} os: {{ ansible_os_family }}
 
-        -   name: Check docker
-            import_tasks: tasks/docker.yml
-            tags: ["docker"]
-
         -   name: Check Ansible User
             import_tasks: tasks/useracc.yml
             tags: ["bash", "user"]
+
+        -   name: Check docker
+            import_tasks: tasks/docker.yml
+            tags: ["docker"]
             
+        -   name: Check firewall rules
+            import_tasks: tasks/firewall.yml
+            tags: ["firewall"]
+        
