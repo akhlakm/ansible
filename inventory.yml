@@ -6,6 +6,9 @@ all:
         ansible_user: akhlak
         ansible_port: 22
         ansible_connection: ssh
+        manage_brew_packages: false
+        manage_apt_packages: true
+        manage_dnf_packages: true
     children:
         server:
             hosts:
@@ -18,4 +21,5 @@ all:
                 macair:
                     ansible_host: localhost
                     ansible_python_interpreter: /opt/homebrew/Caskroom/miniforge/base/bin/python
+                    manage_brew_packages: false
 

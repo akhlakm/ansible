@@ -5,6 +5,7 @@
 -   name: Update and install APT packages
     when:
         - ansible_os_family == 'Debian'
+        - manage_apt_packages
     block:
         -   name: update APT cache
             become: true 
@@ -29,6 +30,7 @@
 -   name: Update and install DNF packages
     when:
         - ansible_os_family == 'RedHat'
+        - manage_dnf_packages
     block:
         -   name: update DNF cache
             become: true 
@@ -47,6 +49,7 @@
 -   name: Update and install Brew packages
     when:
         - ansible_os_family == "Darwin"
+        - manage_brew_packages
     block:
         -   name: upgrade brew and all packages
             community.general.homebrew:
