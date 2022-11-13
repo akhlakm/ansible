@@ -28,4 +28,7 @@
             import_tasks: tasks/docker.yml
             tags: ["docker"]
 
-        
+        -   name: Check Ansible User
+            import_tasks: tasks/useracc.yml
+            tags: ["bash", "user"]
+            
