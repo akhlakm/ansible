@@ -32,3 +32,4 @@ docker_compose_list:
     - adguard
     - portainer
     - nextcloud
+    - jdownloader
