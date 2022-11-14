@@ -1,0 +1,16 @@
+---
+version: "2.1"
+services:
+    pyload:
+        image: lscr.io/linuxserver/pyload-ng:latest
+        container_name: pyload
+        environment:
+            - PUID=1000
+            - PGID=1000
+        volumes:
+            - ./config:/config
+            - $HOME/_media_inbox:/downloads
+            - /etc/localtime:/etc/localtime:ro
+        expose:
+            - 8000
+        restart: unless-stopped

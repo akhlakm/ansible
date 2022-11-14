@@ -22,7 +22,7 @@
 
         -   name: Check Ansible User
             import_tasks: tasks/useracc.yml
-            tags: ["bash", "user"]
+            tags: ["setup"]
 
         -   name: Check local hosts
             import_tasks: tasks/etc_hosts.yml
@@ -30,7 +30,7 @@
 
         -   name: Check docker
             import_tasks: tasks/docker_install.yml
-            tags: ["docker"]
+            tags: ["setup"]
             
         -   name: Check docker compose
             import_tasks: tasks/docker_compose.yml
