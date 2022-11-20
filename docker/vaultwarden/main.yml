@@ -1,0 +1,23 @@
+---
+
+-   tags: ["docker", "vaultwarden"]
+    when: "'server' in group_names"
+    block:
+        -   set_fact:
+                container_root: "{{docker_fs_directory}}/vaultwarden"
+
+        -   name: vaultwarden - dir
+            file:
+                path: "{{ container_root }}/"
+                state: directory
+
+        -   name: vaultwarden - docker compose
+            template:
+                src: docker-compose.j2
+                dest: "{{ container_root }}/docker-compose.yml"
+
+        -   name: vaultwarden - run
+            become: true
+            docker_compose:
+                project_src: "{{ container_root }}/"
+                state: present
