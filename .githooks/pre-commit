@@ -1,0 +1,11 @@
+#!/bin/sh
+## To enable this check, run
+## git config core.hooksPath .githooks
+
+if [[ $(head -n 1 vault.yml) == *ANSIBLE_VAULT* ]]; then
+    exit 0;
+else
+    echo "Error: Attempt to commit with unencrypted vault.yml"
+    exit 1;
+fi
+
