@@ -40,10 +40,6 @@
         -   name: Check docker
             import_tasks: tasks/docker_install.yml
             tags: ["setup"]
-            
-        -   name: Check docker compose
-            import_tasks: tasks/docker_compose.yml
-            tags: ["docker"]
 
         # order matters!
         -   import_tasks: docker/postgres/main.yml
