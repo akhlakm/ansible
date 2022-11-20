@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+    dozzle:
+        image: amir20/dozzle
+        container_name: dozzle
+        restart: unless-stopped
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+        expose:
+            - 8080
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"
