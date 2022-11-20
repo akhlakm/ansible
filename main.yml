@@ -58,3 +58,4 @@
         -   import_tasks: docker/portainer/main.yml
         -   import_tasks: docker/pyload/main.yml
         -   import_tasks: docker/nextcloud/main.yml
+        -   import_tasks: docker/kopia/main.yml

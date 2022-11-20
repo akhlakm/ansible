@@ -1,0 +1,45 @@
+version: "3"
+
+volumes:
+    kopia_cache:
+
+services:
+    kopia:
+        image: kopia/kopia:latest
+        container_name: kopia
+        user: "0:0"
+        restart: "unless-stopped"
+        privileged: true
+        cap_add:
+            - SYS_ADMIN
+        security_opt:
+            - apparmor:unconfined
+        devices:
+            - /dev/fuse:/dev/fuse:rwm
+        expose:
+            - 51515
+        command:
+            - server
+            - start
+            - --address=0.0.0.0:51515
+            - --server-username={{ kopia_server_user }}
+            - --server-password={{ kopia_server_pass }}
+            - --override-hostname=kopia
+            - --disable-csrf-token-checks
+            - --insecure
+        volumes:
+            - "{{docker_fs_directory}}/kopia/config:/app/config"
+            - "{{docker_fs_directory}}/kopia/logs:/app/logs"
+            - kopia_cache:/app/cache # local cache
+            - /mnt/kopia:/tmp:shared # for restore mount
+            - /home/{{ansible_user}}:/data:ro # read-only access to the ansible data
+            - /media/kopia:/media # for repository storage/backup
+        environment:
+            KOPIA_PASSWORD: {{ kopia_password }}
+            TZ: America/New_York
+            USER: {{ kopia_user }}
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"

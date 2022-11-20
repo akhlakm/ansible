@@ -1,0 +1,23 @@
+---
+
+-   tags: ["docker", "kopia"]
+    when: "'server' in group_names"
+    block:
+        -   set_fact:
+                container_root: "{{docker_fs_directory}}/kopia"
+
+        -   name: kopia - dir
+            file:
+                path: "{{ container_root }}/"
+                state: directory
+
+        -   name: kopia - docker compose
+            template:
+                src: docker-compose.j2
+                dest: "{{ container_root }}/docker-compose.yml"
+
+        -   name: kopia - run
+            become: true
+            docker_compose:
+                project_src: "{{ container_root }}/"
+                state: present
