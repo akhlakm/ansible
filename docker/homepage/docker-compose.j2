@@ -1,0 +1,15 @@
+version: "3.3"
+services:
+    homepage:
+        image: ghcr.io/benphelps/homepage:latest
+        container_name: homepage
+        expose:
+            - 3000
+        volumes:
+            - ./config:/app/config # Make sure your local config directory exists
+        restart: unless-stopped
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"

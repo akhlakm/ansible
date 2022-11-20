@@ -1,0 +1,9 @@
+---
+- search:
+    provider: google # google, duckduckgo, bing, baidu or custom
+    focus: true # Optional, will set focus to the search bar on page load
+    target: _blank # One of _self, _blank, _parent or _top
+
+- resources:
+    cpu: true
+    memory: true

@@ -1,0 +1,28 @@
+---
+
+-   tags: ["docker", "ddclient"]
+    when: "'server' in group_names"
+    block:
+        -   set_fact:
+                container_root: "{{docker_fs_directory}}/ddclient"
+
+        -   name: ddclient - config dir
+            file:
+                path: "{{ container_root }}/config/"
+                state: directory
+
+        -   name: ddclient - config
+            template:
+                src: ddclient.conf.j2
+                dest: "{{ container_root }}/config/ddclient.conf"
+                mode: 0600
+
+        -   name: ddclient - docker compose
+            template:
+                src: docker-compose.j2
+                dest: "{{ container_root }}/docker-compose.yml"
+
+        -   name: ddclient - run
+            docker_compose:
+                project_src: "{{ container_root }}/"
+                state: present

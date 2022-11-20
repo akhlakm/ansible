@@ -1,0 +1,20 @@
+---
+
+-   tags: ["docker", "postgres"]
+    when: "'server' in group_names"
+    block:
+        -   name: Postgres
+            file:
+                path: "{{docker_fs_directory}}/postgres/"
+                state: directory
+
+        -   name: Postgres - docker compose
+            template:
+                src: "docker-compose.j2"
+                dest: "{{docker_fs_directory}}/postgres/docker-compose.yml"
+
+        -   name: Postgres - run
+            become: true
+            docker_compose:
+                project_src: "{{docker_fs_directory}}/postgres/"
+                state: present

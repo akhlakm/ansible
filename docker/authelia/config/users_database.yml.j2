@@ -1,0 +1,22 @@
+# yamllint disable rule:line-length
+---
+###############################################################
+#                         Users Database                      #
+###############################################################
+
+users:
+    {{ authelia_username }}:
+        disabled: false
+        displayname: "{{ authelia_username }}"
+        password: "{{ authelia_password }}"
+        email: "{{ authelia_email }}"
+        groups:
+            - admin
+            - user
+---
+# Create new password using
+# docker run --rm authelia/authelia:latest authelia hash-password 'yourpassword'
+# Add it to the /config/users_database.yml
+
+# yamllint enable rule:line-length
+

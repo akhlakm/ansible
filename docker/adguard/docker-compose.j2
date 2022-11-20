@@ -1,8 +1,8 @@
 ---
 version: '3.3'
 services:
-    adguardhome:
-        container_name: adguardhome
+    adguard:
+        container_name: adguard
         restart: unless-stopped
         volumes:
             - './work:/opt/adguardhome/work'
@@ -11,10 +11,13 @@ services:
             - '53:53/tcp'
             - '53:53/udp'
         expose:
+            # setup port
             - "3000"
+            # admin port
+            - "3003"
         image: adguard/adguardhome
 
 networks:
     default:
         external: true
-        name: dockernet
+        name: "{{ docker_network }}"

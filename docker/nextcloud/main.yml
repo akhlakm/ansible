@@ -1,0 +1,22 @@
+---
+
+-   tags: ["docker", "nextcloud"]
+    when: "'server' in group_names"
+    block:
+        -   set_fact:
+                container_root: "{{docker_fs_directory}}/nextcloud"
+
+        -   name: nextcloud - dir
+            file:
+                path: "{{ container_root }}/"
+                state: directory
+
+        -   name: nextcloud - docker compose
+            template:
+                src: docker-compose.j2
+                dest: "{{ container_root }}/docker-compose.yml"
+
+        -   name: nextcloud - run
+            docker_compose:
+                project_src: "{{ container_root }}/"
+                state: present

@@ -1,0 +1,13 @@
+---
+- getent:
+      database: passwd
+      key: "{{ ansible_user }}"
+
+- name: Get UID
+  set_fact:
+      ansible_uid: "{{ getent_passwd[ansible_user].1 }}"
+
+- name: Get GID
+  set_fact:
+      ansible_gid: "{{ getent_passwd[ansible_user].2 }}"
+

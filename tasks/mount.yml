@@ -1,0 +1,23 @@
+# Mount USB drives
+---
+-   name: USB mounted
+    when: "inventory_hostname == 'envypro'"
+    block:
+        -   name: check path exists
+            stat:
+                path: "{{ mnt_point_1tb }}/.mounted"
+            register: usb
+            failed_when: "not (usb.stat.exists and usb.stat.isreg)"
+    rescue:
+        -   name: mount usb
+            become: true
+            shell: "mount {{ hdd_dev_1tb }} {{ mnt_point_1tb }}"
+            register: res
+            failed_when: "res.rc != 0"
+    
+        -   name: touch .mounted file
+            become: true
+            file:
+                path: "{{ 1tb_mnt_point }}/.mounted"
+                state: touch
+                mode: 0555

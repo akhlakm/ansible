@@ -6,6 +6,7 @@
     name: Main playbook
 
     vars_files:
+        - vault.yml
         - variables.yml
 
     pre_tasks:
@@ -24,6 +25,14 @@
             import_tasks: tasks/useracc.yml
             tags: ["setup"]
 
+        -   name: Check firewall rules
+            import_tasks: tasks/firewall.yml
+            tags: ["network"]
+        
+        -   name: Check hdds mounted 
+            import_tasks: tasks/mount.yml
+            tags: ["boot"]
+
         -   name: Check local hosts
             import_tasks: tasks/etc_hosts.yml
             tags: ["network"]
@@ -36,7 +45,16 @@
             import_tasks: tasks/docker_compose.yml
             tags: ["docker"]
 
-        -   name: Check firewall rules
-            import_tasks: tasks/firewall.yml
-            tags: ["network"]
-        
+        # order matters!
+        -   import_tasks: docker/postgres/main.yml
+        -   import_tasks: docker/authelia/main.yml
+        -   import_tasks: docker/nginx-proxy/main.yml
+
+        # order does not matter
+        -   import_tasks: docker/ddclient/main.yml
+        -   import_tasks: docker/homepage/main.yml
+        -   import_tasks: docker/adguard/main.yml
+        -   import_tasks: docker/monitoring/main.yml
+        -   import_tasks: docker/portainer/main.yml
+        -   import_tasks: docker/pyload/main.yml
+        -   import_tasks: docker/nextcloud/main.yml

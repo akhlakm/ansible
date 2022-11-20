@@ -1,0 +1,18 @@
+---
+version: "2.1"
+services:
+  ddclient:
+    image: lscr.io/linuxserver/ddclient:latest
+    container_name: ddclient
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - ./config:/config
+    restart: unless-stopped
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"

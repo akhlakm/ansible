@@ -2,23 +2,15 @@
 ---
 - name: Run docker compose services
   when: "'server' in group_names"
-  become: true
   block:
-    -   name: create docker dirs
-        file:
-            path: "{{docker_fs_directory}}/{{ item }}"
-            mode: 0755
-            state: directory
-        loop: "{{ docker_compose_list }}"
-
-    -   name: copy docker compose files
+    -   name: copy docker assets
+        become: true
         copy:
-            src: "files/docker-compose/{{ item }}.yml"
-            dest: "{{docker_fs_directory}}/{{ item }}/docker-compose.yml"
-        loop: "{{ docker_compose_list }}"
-    
+            src: "files/docker-assets/{{ item.split(':')[0] }}/"
+            dest: "{{docker_fs_directory}}/{{ item.split(':')[0] }}/{{ item.split(':')[1] }}/"
+        loop: "{{ docker_assets }}"
+        tags: ["assets"]
+
     -   name: docker compose running
-        docker_compose:
-            project_src: "{{docker_fs_directory}}/{{ item }}"
-            state: present
+        include_tasks: tasks/docker_compose.item.yml 
         loop: "{{ docker_compose_list }}"

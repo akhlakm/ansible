@@ -1,0 +1,26 @@
+---
+-   debug:
+        msg: "{{ item }}"
+
+-   name: copy docker compose
+    copy:
+        src: "files/docker-compose/{{ item }}.yml"
+        dest: "{{docker_fs_directory}}/{{ item }}/docker-compose.yml"
+
+-   name: check env file exists
+    delegate_to: localhost
+    stat:
+        path: "files/docker-compose/{{ item }}.env.j2"
+    register: envfile
+
+-   name: copy env file
+    template:
+        src: "files/docker-compose/{{ item }}.env.j2"
+        dest: "{{docker_fs_directory}}/{{ item }}/.env"
+    when: envfile.stat.exists
+
+-   name: docker compose up
+    become: true
+    docker_compose:
+          project_src: "{{docker_fs_directory}}/{{ item }}"
+          state: present

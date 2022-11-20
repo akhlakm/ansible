@@ -1,0 +1,34 @@
+version: "3"
+services:
+    nginx:
+        image: "jc21/nginx-proxy-manager:latest"
+        container_name: nginx-proxy
+        restart: unless-stopped
+        environment:
+            TZ: 'America/New_York'
+        ports:
+            - "80:80"
+            - "81:81"
+            - "443:443"
+        volumes:
+            - ./data:/data
+            - ./letsencrypt:/etc/letsencrypt
+            - ./snippets:/snippets
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"
+
+## SSL Certificate for wildcard domain
+# docker exec -it nginx-proxy_app_1 bash
+# certbot -d *.example.com --manual --preferred-challenges dns certonly
+# Deploy a DNS TXT record under the name _acme-challenge.example.com with:
+# In your google domain administration, add a custom record.
+# Change the record to a TXT record.
+# Ensure the sub domain is _acme-challenge
+# Copy and paste the generated value from your certbot window as the value for your txt record.
+# Once this is done, cross-check following the url, Press ENTER to continue.
+# The crertificates will be saved in ./letsencrypt/archive/example.com/
+# Copy the files to your localhost using rsync and upload to npm web ui.
+# -------------

@@ -1,0 +1,68 @@
+---
+
+-   name: Authelia
+    when: "'server' in group_names"
+    tags: ["docker", "authelia"]
+    block:
+        -   import_tasks: tasks/getent.yml
+
+        -   set_fact:
+                container: authelia
+                nginx: nginx-proxy
+
+        -   name: Authelia - secrets dir
+            file:
+                path: "{{docker_fs_directory}}/{{ container }}/secrets/"
+                state: directory
+
+        -   name: Authelia - config dir
+            file:
+                path: "{{docker_fs_directory}}/{{ container }}/config/"
+                state: directory
+
+        -   name: Authelia - secrets
+            copy:
+                dest: "{{docker_fs_directory}}/{{ container }}{{ item.key }}"
+                content: "{{ item.value }}"
+                mode: 0600
+            with_dict: "{{ authelia_secrets }}"
+
+        -   name: Authelia - configuration
+            template:
+                src: "config/config.yml.j2"
+                dest: "{{docker_fs_directory}}/{{ container }}/config/configuration.yml"
+
+        -   name: Authelia - encrypt passwd
+            shell: "docker run --rm authelia/authelia:latest authelia hash-password '{{ authelia_password }}'"
+            register: authelia
+            failed_when: "authelia.rc != 0"
+            changed_when: false
+
+        -   name: Authelia - set passwd
+            set_fact:
+                authelia_password: "{{ authelia.stdout.split(' ')[1] }}"
+
+        -   name: Authelia - users database
+            template:
+                src: "config/users_database.yml.j2"
+                dest: "{{docker_fs_directory}}/{{ container }}/config/users_database.yml"
+
+        -   name: Authelia - docker compose
+            template:
+                src: docker-compose.j2
+                dest: "{{docker_fs_directory}}/{{ container }}/docker-compose.yml"
+
+        -   name: Authelia - nginx
+            file:
+                path: "{{docker_fs_directory}}/{{ nginx }}/snippets/"
+                state: directory
+
+        -   name: Authelia - nginx snippets
+            copy:
+                src: snippets/
+                dest: "{{docker_fs_directory}}/{{ nginx }}/snippets/"
+
+        -   name: Authelia - run
+            docker_compose:
+                project_src: "{{docker_fs_directory}}/{{ container }}/"
+                state: present

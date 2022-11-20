@@ -1,0 +1,29 @@
+---
+version: "3.8"
+services:
+    authelia:
+        container_name: authelia
+        image: docker.io/authelia/authelia:latest
+        restart: unless-stopped
+        user: "{{ ansible_uid }}"
+        expose:
+            - 9091
+            - 9959
+        environment:
+            AUTHELIA_JWT_SECRET_FILE: /secrets/jwt
+            AUTHELIA_SESSION_SECRET_FILE: /secrets/session
+            AUTHELIA_STORAGE_POSTGRES_PASSWORD_FILE: /secrets/storage
+            AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /secrets/storage_encryption
+        volumes:
+            - "{{docker_fs_directory}}/authelia/config:/config"
+            - "{{docker_fs_directory}}/authelia/secrets:/secrets"
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"
+
+...
+# Create new password using 
+# docker run --rm authelia/authelia:latest authelia hash-password 'yourpassword'
+# Add it to the /config/users_database.yml

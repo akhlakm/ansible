@@ -1,7 +1,7 @@
 # Setup user account, group, shell enviroment
 ---
 
--   name: Ansible User
+-   name: Server Machines
     when: "'server' in group_names"
     block:
         -   name: set sudo group 
@@ -42,3 +42,11 @@
             copy:
                 src: files/system/bashrc.sh
                 dest: /etc/profile.d/bashrc.sh
+
+-   name: All Machines
+    block:
+        -   name: gitconfig
+            template:
+                src: files/system/gitconfig.j2
+                dest: "~/.gitconfig"
+                mode: 0440

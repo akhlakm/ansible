@@ -1,0 +1,22 @@
+---
+
+-   tags: ["docker", "adguard", "adguardhome", "dns"]
+    when: "'server' in group_names"
+    block:
+        -   set_fact:
+                container_root: "{{docker_fs_directory}}/adguard"
+
+        -   name: adguard - dir
+            file:
+                path: "{{ container_root }}/"
+                state: directory
+
+        -   name: adguard - docker compose
+            template:
+                src: docker-compose.j2
+                dest: "{{ container_root }}/docker-compose.yml"
+
+        -   name: adguard - run
+            docker_compose:
+                project_src: "{{ container_root }}/"
+                state: present

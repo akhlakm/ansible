@@ -1,0 +1,79 @@
+version: "3"
+
+services:
+    prometheus:
+        container_name: prometheus
+        image: prom/prometheus
+        user: "0"
+        volumes:
+            - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+            - ./config/alert_rules.yml:/etc/prometheus/alert_rules.yml
+            - "{{ container_root }}/prometheus_data:/prometheus"
+        command:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+        expose:
+            - 9090
+
+    cadvisor:
+        container_name: cadvisor
+        image: gcr.io/cadvisor/cadvisor:latest
+        volumes:
+            - /:/rootfs:ro
+            - /var/run:/var/run:ro
+            - /var/lib/docker/:/var/lib/docker:ro
+            - /dev/dish/:/dev/disk:ro
+        expose:
+            - 8080
+        devices:
+            - /dev/kmsg
+
+    node_exporter:
+        container_name: node_exporter
+        image: quay.io/prometheus/node-exporter:latest
+        command:
+            - "--path.rootfs=/host"
+        restart: unless-stopped
+        volumes:
+            - "/:/host:ro,rslave"
+        expose:
+            - 9100
+
+    # nginx_exporter:
+    #     image: nginx/nginx-prometheus-exporter
+    #     command:
+    #         - "-nginx.scrape-uri=http://nginx:8080/stub_status"
+    #     expose:
+    #         - "9113"
+
+    loki:
+        image: grafana/loki:2.6.0
+        volumes:
+            - ./config/loki_config.yml:/etc/loki/local-config.yaml
+        expose:
+            - 3100
+        command: -config.file=/etc/loki/local-config.yaml
+
+    promtail:
+        image: grafana/promtail:2.6.0
+        volumes:
+            - ./config/promtail_config.yml:/etc/promtail/config.yml
+            - "{{docker_fs_directory}}/nginx-proxy/data/logs:/nginx:ro"
+            - "{{docker_fs_directory}}/authelia/config/authelia.log:/authelia.log:ro"
+        command: -config.file=/etc/promtail/config.yml
+
+    grafana:
+        container_name: grafana
+        hostname: grafana
+        user: "0"
+        image: grafana/grafana
+        volumes:
+            - ./config/grafana_datasources.yml:/etc/grafana/provisioning/datasources/all.yaml
+            - ./config/grafana_config.ini:/etc/grafana/config.ini
+            - "{{ container_root }}/grafana_data:/var/lib/grafana"
+        expose:
+            - 3000
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"
