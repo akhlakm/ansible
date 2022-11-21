@@ -58,3 +58,4 @@
         # -   import_tasks: docker/vaultwarden/main.yml
         -   import_tasks: docker/dozzle/main.yml
         -   import_tasks: docker/scrutiny/main.yml
+        -   import_tasks: docker/gotify/main.yml

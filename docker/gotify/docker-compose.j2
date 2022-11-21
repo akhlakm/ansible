@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+    gotify:
+        container_name: gotify
+        image: gotify/server
+        restart: unless-stopped
+        expose:
+            - 80
+        environment:
+            - TZ=America/New_York
+        volumes:
+            - "./data:/app/data"
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"
