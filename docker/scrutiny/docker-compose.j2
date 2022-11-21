@@ -14,11 +14,8 @@ services:
       - ./config:/opt/scrutiny/config
       - ./influxdb:/opt/scrutiny/influxdb
     devices:
-      - "/dev/sda1"
-      - "/dev/nvme0n1p1"
-      - "/dev/nvme0n1p2"
-      - "/dev/nvme0n1p3"
-      - "/dev/nvme0n1p4"
+      - "/dev/sda"
+      - "/dev/nvme0"
 
 networks:
     default:
