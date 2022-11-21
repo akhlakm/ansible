@@ -15,7 +15,7 @@ services:
             AUTHELIA_STORAGE_POSTGRES_PASSWORD_FILE: /secrets/storage
             AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /secrets/storage_encryption
         volumes:
-            - "{{docker_fs_directory}}/authelia/config:/config"
+            - "{{docker_fs_directory}}/authelia/config:/config:shared"
             - "{{docker_fs_directory}}/authelia/secrets:/secrets"
 
 networks:
