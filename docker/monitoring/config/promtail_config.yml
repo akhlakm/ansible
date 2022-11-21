@@ -17,18 +17,25 @@ scrape_configs:
                 job: varlogs
                 __path__: /var/log/*log
 
-    - job_name: nginx
+    - job_name: nginx-access
       static_configs:
           - targets:
                 - localhost
             labels:
-                app: nginx
-                job: nginx
+                app: nginx-access
                 __path__: /nginx/*json
-                host: nginx
+
+    - job_name: nginx-fallback
+      static_configs:
+          - targets:
+                - localhost
+            labels:
+                app: nginx-fallback
+                __path__: /nginx/fallback_access.log
+
     #   pipeline_stages:
     #     - match:
-    #         selector: '{app="nginx"}'
+    #         selector: '{app="nginx-fallback"}'
     #         stages:
     #         - regex:
     #             # [18/Nov/2022:23:29:56 +0000] - - 200 - GET http nginx "/stub_status" [Client 172.19.0.11] [Length 104] [Gzip -] [Sent-to ] "NGINX-Prometheus-Exporter/v0.11.0" "-"
@@ -48,7 +55,7 @@ scrape_configs:
                 - localhost
             labels:
                 app: authelia
-                __path__: /authelia.log
+                __path__: /authelia/authelia.log
 
     # - job_name: journal
     #   journal:

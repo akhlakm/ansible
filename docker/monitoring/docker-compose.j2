@@ -58,7 +58,7 @@ services:
         volumes:
             - ./config/promtail_config.yml:/etc/promtail/config.yml
             - "{{docker_fs_directory}}/nginx-proxy/data/logs:/nginx:ro"
-            - "{{docker_fs_directory}}/authelia/config/authelia.log:/authelia.log:ro"
+            - "{{docker_fs_directory}}/authelia/config/:/authelia:ro"
         command: -config.file=/etc/promtail/config.yml
 
     grafana:
