@@ -1,0 +1,22 @@
+---
+
+-   tags: ["docker", "watchtower"]
+    when: "'server' in group_names"
+    block:
+        -   set_fact:
+                container_root: "{{docker_fs_directory}}/watchtower"
+
+        -   name: watchtower - dir
+            file:
+                path: "{{ container_root }}/"
+                state: directory
+
+        -   name: watchtower - docker compose
+            template:
+                src: docker-compose.j2
+                dest: "{{ container_root }}/docker-compose.yml"
+
+        -   name: watchtower - run
+            docker_compose:
+                project_src: "{{ container_root }}/"
+                state: present

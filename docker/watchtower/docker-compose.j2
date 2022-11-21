@@ -1,0 +1,18 @@
+version: "3"
+services:
+    watchtower:
+        container_name: watchtower
+        image: containrrr/watchtower
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+            - TZ=America/New_York
+            - WATCHTOWER_NOTIFICATIONS=gotify
+            - "WATCHTOWER_NOTIFICATION_GOTIFY_URL=http://gotify/"
+            - WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=Acp0CkYpmU8iver
+            - WATCHTOWER_NOTIFICATION_GOTIFY_TLS_SKIP_VERIFY=true
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"

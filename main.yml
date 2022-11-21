@@ -59,3 +59,4 @@
         -   import_tasks: docker/dozzle/main.yml
         -   import_tasks: docker/scrutiny/main.yml
         -   import_tasks: docker/gotify/main.yml
+        -   import_tasks: docker/watchtower/main.yml
