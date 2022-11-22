@@ -1,0 +1,14 @@
+version: "3"
+services:
+    cloudcommander:
+        image: coderaiser/cloudcmd
+        container_name: cloudcommander
+        expose:
+            - 8000
+        volumes:
+            - ~:/root
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"
