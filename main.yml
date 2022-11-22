@@ -61,3 +61,4 @@
         -   import_tasks: docker/gotify/main.yml
         -   import_tasks: docker/watchtower/main.yml
         -   import_tasks: docker/kavita/main.yml
+        -   import_tasks: docker/grocy/main.yml
