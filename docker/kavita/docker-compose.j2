@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+    kavita:
+        image: kizaing/kavita:latest
+        container_name: kavita
+        volumes:
+            - ./comics:/comics
+            - ./manga:/manga
+            - ./books:/books
+            - ./articles:/articles
+            - ./data:/kavita/config
+        expose:
+            - 5000
+        restart: unless-stopped
+        environment:
+            - TZ=America/New_York
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"

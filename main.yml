@@ -60,3 +60,4 @@
         -   import_tasks: docker/scrutiny/main.yml
         -   import_tasks: docker/gotify/main.yml
         -   import_tasks: docker/watchtower/main.yml
+        -   import_tasks: docker/kavita/main.yml
