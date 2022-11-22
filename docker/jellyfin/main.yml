@@ -1,0 +1,22 @@
+---
+
+-   tags: ["docker", "jellyfin"]
+    when: "'server' in group_names"
+    block:
+        -   set_fact:
+                container_root: "{{docker_fs_directory}}/jellyfin"
+
+        -   name: jellyfin - dir
+            file:
+                path: "{{ container_root }}/"
+                state: directory
+
+        -   name: jellyfin - docker compose
+            template:
+                src: docker-compose.j2
+                dest: "{{ container_root }}/docker-compose.yml"
+
+        -   name: jellyfin - run
+            docker_compose:
+                project_src: "{{ container_root }}/"
+                state: present

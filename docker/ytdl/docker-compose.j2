@@ -14,8 +14,8 @@ services:
             TZ: 'America/New_York'
 
         volumes:
-            - ~/_media_inbox/ytdl:/app/video
-            - ./audio:/app/audio
+            - ~/media/video:/app/video
+            - ~/media/audio:/app/audio
             - ./subscriptions:/app/subscriptions
             - ./appdata:/app/appdata
             - ./users:/app/users
