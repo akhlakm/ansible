@@ -63,3 +63,4 @@
         -   import_tasks: docker/kavita/main.yml
         -   import_tasks: docker/grocy/main.yml
         -   import_tasks: docker/cloudcommander/main.yml
+        -   import_tasks: docker/ytdl/main.yml

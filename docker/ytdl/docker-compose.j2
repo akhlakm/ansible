@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+    ytdl:
+        image: tzahi12345/youtubedl-material:latest
+        container_name: ytdl
+        restart: unless-stopped
+
+        environment: 
+            ALLOW_CONFIG_MUTATIONS: 'true'
+            ytdl_mongodb_connection_string: 'mongodb://ytdl-mongo-db:27017'
+            ytdl_use_local_db: 'false'
+            write_ytdl_config: 'true'
+            TZ: 'America/New_York'
+
+        volumes:
+            - ~/_media_inbox/ytdl:/app/video
+            - ./audio:/app/audio
+            - ./subscriptions:/app/subscriptions
+            - ./appdata:/app/appdata
+            - ./users:/app/users
+        expose:
+            - 17442
+
+    ytdl-mongo-db:
+        image: mongo:latest
+        container_name: ytdl-mongo-db
+        restart: unless-stopped
+        expose:
+            - 27017
+        volumes:
+            - ./db/:/data/db
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"
