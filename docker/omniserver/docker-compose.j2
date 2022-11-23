@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+    omniserver:
+        container_name: omniserver
+        image: omniserver
+        restart: unless-stopped
+        expose:
+            - 9009
+        environment:
+            - TZ=America/New_York
+        volumes:
+            - ./config:/config
+            - $HOME/_media_inbox:/inbox
+            - "{{ mnt_point_1tb }}/{{ omniserver_media_dir }}:/media"
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"

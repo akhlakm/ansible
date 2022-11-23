@@ -1,0 +1,22 @@
+---
+
+-   tags: ["docker", "omniserver"]
+    when: "'server' in group_names"
+    block:
+        -   set_fact:
+                container_root: "{{docker_fs_directory}}/omniserver"
+
+        -   name: omniserver - dir
+            file:
+                path: "{{ container_root }}/config"
+                state: directory
+
+        -   name: omniserver - docker compose
+            template:
+                src: docker-compose.j2
+                dest: "{{ container_root }}/docker-compose.yml"
+
+        -   name: omniserver - run
+            docker_compose:
+                project_src: "{{ container_root }}/"
+                state: present
