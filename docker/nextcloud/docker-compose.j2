@@ -10,6 +10,7 @@ services:
 
     nextcloud:
         image: nextcloud
+        container_name: nextcloud
         restart: unless-stopped
         expose:
             - 80
