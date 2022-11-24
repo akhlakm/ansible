@@ -15,24 +15,24 @@
                 permanent: yes
                 state: enabled
 
-        -   name: Open firewalld ports
-            become: true
-            ansible.posix.firewalld:
-                permanent: yes 
-                immediate: yes 
-                port: "{{item.port}}/{{item.proto}}"
-                state: "{{item.state}}"
-                zone: "{{item.zone}}"
-            with_items:
-                # Note: do not add ports other than the basic ones.
-                # Run a reverse proxy server to give access to more ports.
-                - { port: "80", proto: "tcp", state: "enabled", zone: "public" }
-                - { port: "81", proto: "tcp", state: "enabled", zone: "public" }
-                - { port: "443", proto: "tcp", state: "enabled", zone: "public" }
-                # DNS server
-                - { port: "53", proto: "tcp", state: "enabled", zone: "public" }
-                - { port: "53", proto: "udp", state: "enabled", zone: "public" }
-
+        # These ports are automatically allowed via iptables if run using docker.
+        # -   name: Open firewalld ports
+        #     become: true
+        #     ansible.posix.firewalld:
+        #         permanent: yes 
+        #         immediate: yes 
+        #         port: "{{item.port}}/{{item.proto}}"
+        #         state: "{{item.state}}"
+        #         zone: "{{item.zone}}"
+        #     with_items:
+        #         # Note: do not add ports other than the basic ones.
+        #         # Run a reverse proxy server to give access to more ports.
+        #         - { port: "80", proto: "tcp", state: "enabled", zone: "public" }
+        #         - { port: "81", proto: "tcp", state: "enabled", zone: "public" }
+        #         - { port: "443", proto: "tcp", state: "enabled", zone: "public" }
+        #         # DNS server
+        #         - { port: "53", proto: "tcp", state: "enabled", zone: "public" }
+        #         - { port: "53", proto: "udp", state: "enabled", zone: "public" }
 
 # Logging with firewalld
 # sudo firewall-cmd --set-log-denied all
