@@ -1,0 +1,16 @@
+version: "3.0"
+
+services:
+    selenium-chrome:
+        image: selenium/standalone-chrome
+        container_name: selenium-chrome
+        expose:
+            - 4444
+            - 7900
+        volumes:
+            - /dev/shm:/dev/shm
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"
