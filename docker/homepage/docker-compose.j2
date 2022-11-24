@@ -8,6 +8,7 @@ services:
         volumes:
             - ./config:/app/config # Make sure your local config directory exists
             - /var/run/docker.sock:/var/run/docker.sock:ro
+            - "{{ mnt_point_1tb }}:/mnt"
         restart: unless-stopped
 
 networks:

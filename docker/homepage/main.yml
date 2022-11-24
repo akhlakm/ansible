@@ -23,6 +23,7 @@
             loop:
                 - settings
                 - services
+                - widgets
 
         -   name: homepage - docker compose
             template:

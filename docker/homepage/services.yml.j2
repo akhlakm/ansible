@@ -1,33 +1,86 @@
-- Setup:
-    - Portainer:
-        href: http://port.{{ localm }}/
-    - AdGuard:
-        href: http://dns.{{ localm }}/
-    - NginX:
-        href: http://{{ localm }}:81/
-    - Graphs:
-        href: http://graph.{{ localm }}/
-    - Scrutiny:
-        href: http://scrutiny.{{ localm }}/
+- Entertainment:
+    - Media:
+        icon: firewalla
+        href: http://media.{{ localm }}/
+        server: my-docker
+        container: omniserver
+    - Jellyfin:
+        icon: jellyfin
+        href: "http://jellyfin.{{ localm }}"
+        server: my-docker
+        container: jellyfin
+        widget:
+            type: jellyfin
+            url: "http://jellyfin:8096"
+            key: "{{ apikeys.jellyfin }}"
+    - Downloader:
+        icon: pyload
+        href: http://dload.{{ localm }}/
+        server: my-docker
+        container: pyload
+    - Youtube-dl:
+        icon: youtubedl
+        href: http://ytdl.{{ localm }}/
+        server: my-docker
+        container: ytdl
+
+
+- Documents:
     - Library:
+        icon: kavita
         href: https://lib.{{ domain }}/
     - Kitchen:
+        icon: grocy
         href: https://kitchen.{{ domain }}/
-    - Youtube-dl:
-        href: http://ytdl.{{ localm }}/
+    - Nextcloud:
+        icon: nextcloud
+        href: https://nc.{{ domain }}/
+        server: my-docker
+        container: nextcloud
+
+- Monitoring:
+    - Notifications:
+        icon: gotify
+        href: "http://logs.{{ localm }}"
+        widget:
+            type: gotify
+            url: "http://gotify:80"
+            key: "{{ apikeys.gotify }}"
+    - Graphs:
+        icon: grafana
+        href: http://graph.{{ localm }}/
+        server: my-docker
+        container: grafana
+    - Scrutiny:
+        icon: scrutiny
+        href: http://scrutiny.{{ localm }}/
+    - Dozzle:
+        icon: dozzle
+        href: http://dozzle.{{ localm }}/
 
 - Tools:
-    - Media:
-        href: http://media.{{ localm }}/
-    - Downloader:
-        href: http://dload.{{ localm }}/
-    - Nextcloud:
-        href: https://nc.{{ domain }}/
     - Backup:
+        icon: kopia
         href: http://backup.{{ localm }}/
-    - Dozzle:
-        href: http://dozzle.{{ localm }}/
-    - Notifications:
-        href: http://logs.{{ localm }}/
+        server: my-docker
+        container: kopia
     - Commander:
+        icon: cloudcmd
         href: http://cmd.{{ localm }}/
+    - AdGuard:
+        icon: adguard-home
+        href: http://dns.{{ localm }}/
+        server: my-docker
+        container: adguard
+
+- Setup:
+    - NginX:
+        icon: nginx
+        href: http://{{ localm }}:81/
+        server: my-docker
+        container: nginx-proxy
+    - Portainer:
+        icon: portainer
+        href: http://port.{{ localm }}/
+        server: my-docker
+        container: portainer
