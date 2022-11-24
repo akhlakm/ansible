@@ -1,0 +1,52 @@
+---
+# https://fedoraproject.org/wiki/How_to_edit_iptables_rules
+
+-   when: ansible_os_family == 'RedHat'
+    tags: ["network", "iptables"]
+    block:
+        -   name: iptables - save on stop
+            become: true
+            lineinfile:
+                path: /etc/sysconfig/iptables-config
+                regexp: '^(.*)IPTABLES_SAVE_ON_STOP(.*)$'
+                line: 'IPTABLES_SAVE_ON_STOP="yes"'
+                backrefs: true
+
+        -   name: iptables - save on restart
+            become: true
+            lineinfile:
+                path: /etc/sysconfig/iptables-config
+                regexp: '^(.*)IPTABLES_SAVE_ON_RESTART(.*)$'
+                line: 'IPTABLES_SAVE_ON_RESTART="yes"'
+                backrefs: true
+
+
+-   name: iptables - docker logging
+    when: docker_required
+    tags: ["network", "iptables"]
+    block:
+        -   set_fact:
+                ipt_dockerlog: false
+                ipt_dockerchain: false
+
+        -   name: iptables - docker chain
+            become: true 
+            shell: iptables -L DOCKER
+            register: ipt
+            changed_when: false
+
+        -   name: iptables - get docker chain
+            set_fact:
+                ipt_dockerchain: true
+            when: "ipt.rc == 0"
+
+        -   name: iptables - get docker log
+            set_fact:
+                ipt_dockerlog: true
+            when: "'IP-ACCEPT' in ipt.stdout"
+        
+        -   name: iptables - docker chain logging 
+            become: true
+            shell: iptables -L DOCKER 1 -i wlo1 -j LOG --log-prefix="IP-ACCEPT " --log-level 4
+            when: "ipt_dockerlog == false and ipt_dockerchain"
+
