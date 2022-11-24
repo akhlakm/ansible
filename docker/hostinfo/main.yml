@@ -1,0 +1,31 @@
+---
+
+-   tags: ["docker", "hostinfo"]
+    when: "'server' in group_names"
+    block:
+        -   set_fact:
+                container_root: "{{docker_fs_directory}}/hostinfo"
+
+        -   name: hostinfo - dir
+            file:
+                path: "{{ container_root }}"
+                state: directory
+
+        -   name: hostinfo - config file
+            copy:
+                src: "{{ item }}"
+                dest: "{{ container_root }}/{{ item }}"
+            loop:
+                - promtail_config.yml
+                - patterns.txt
+
+        -   name: hostinfo - docker compose
+            template:
+                src: docker-compose.j2
+                dest: "{{ container_root }}/docker-compose.yml"
+
+        -   name: hostinfo - run
+            become: true
+            docker_compose:
+                project_src: "{{ container_root }}/"
+                state: present

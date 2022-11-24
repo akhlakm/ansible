@@ -14,52 +14,14 @@ services:
         expose:
             - 9090
 
-    cadvisor:
-        container_name: cadvisor
-        image: gcr.io/cadvisor/cadvisor:latest
-        volumes:
-            - /:/rootfs:ro
-            - /var/run:/var/run:ro
-            - /var/lib/docker/:/var/lib/docker:ro
-            - /dev/dish/:/dev/disk:ro
-        expose:
-            - 8080
-        devices:
-            - /dev/kmsg
-
-    node_exporter:
-        container_name: node_exporter
-        image: quay.io/prometheus/node-exporter:latest
-        command:
-            - "--path.rootfs=/host"
-        restart: unless-stopped
-        volumes:
-            - "/:/host:ro,rslave"
-        expose:
-            - 9100
-
-    # nginx_exporter:
-    #     image: nginx/nginx-prometheus-exporter
-    #     command:
-    #         - "-nginx.scrape-uri=http://nginx:8080/stub_status"
-    #     expose:
-    #         - "9113"
-
     loki:
         image: grafana/loki:2.6.0
+        container_name: loki
         volumes:
             - ./config/loki_config.yml:/etc/loki/local-config.yaml
         expose:
             - 3100
         command: -config.file=/etc/loki/local-config.yaml
-
-    promtail:
-        image: grafana/promtail:2.6.0
-        volumes:
-            - ./config/promtail_config.yml:/etc/promtail/config.yml
-            - "{{docker_fs_directory}}/nginx-proxy/data/logs:/nginx:ro"
-            - "{{docker_fs_directory}}/authelia/config/:/authelia:ro"
-        command: -config.file=/etc/promtail/config.yml
 
     grafana:
         container_name: grafana

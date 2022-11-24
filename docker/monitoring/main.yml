@@ -22,7 +22,6 @@
                 dest: "{{ container_root }}/docker-compose.yml"
 
         -   name: monitoring - run
-            become: true
             docker_compose:
                 project_src: "{{ container_root }}/"
                 state: present

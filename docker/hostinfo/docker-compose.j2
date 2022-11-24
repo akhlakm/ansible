@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+    node_exporter:
+        container_name: node_exporter
+        image: quay.io/prometheus/node-exporter:latest
+        command:
+            - "--path.rootfs=/host"
+        restart: unless-stopped
+        environment:
+            - TZ=America/New_York
+        volumes:
+            - "/:/host:ro,rslave"
+        expose:
+            - 9100
+
+    hostjournal:
+        image: alpine
+        container_name: hostjournal
+        volumes:
+            - /var/log/messages:/var/log/messages:ro
+            - ./patterns.txt:/patterns.txt:ro
+            - ./logs:/tmp/:shared
+        command:
+            - sh
+            - "-c"
+            - "tail -f /var/log/messages | grep -f /patterns.txt | tee /tmp/hostjournal.log"
+
+    promtail:
+        image: grafana/promtail:2.6.0
+        container_name: promtail
+        command: -config.file=/etc/promtail/config.yml
+        environment:
+            - TZ=America/New_York
+        volumes:
+            - ./promtail_config.yml:/etc/promtail/config.yml
+            - "{{docker_fs_directory}}/nginx-proxy/data/logs:/nginx:ro"
+            - "{{docker_fs_directory}}/authelia/config/:/authelia:ro"
+            - ./logs:/tmp/:shared
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"

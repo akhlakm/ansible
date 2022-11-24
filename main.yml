@@ -53,6 +53,7 @@
         -   import_tasks: docker/homepage/main.yml
         -   import_tasks: docker/adguard/main.yml
         -   import_tasks: docker/monitoring/main.yml
+        -   import_tasks: docker/hostinfo/main.yml
         -   import_tasks: docker/portainer/main.yml
         -   import_tasks: docker/pyload/main.yml
         -   import_tasks: docker/nextcloud/main.yml
