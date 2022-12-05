@@ -1,0 +1,28 @@
+version: "3.0"
+
+services:
+    selenium:
+        image: selenium/standalone-chrome
+        container_name: selenium
+        expose:
+            - 4444
+            - 7900
+        shm_size: 2g
+
+    autosel:
+        image: autosel:latest
+        container_name: autosel
+        user: '1000'
+        depends_on:
+            - selenium
+        environment:
+            - REMOTE_DRIVER=http://selenium:4444
+            - REMOTE_PROFILE=/tmp/chrome
+        volumes:
+            - ./data:/app/data
+            - $HOME/_media_inbox:/app/downloads
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"
