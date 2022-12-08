@@ -18,6 +18,6 @@
         -   name: touch .mounted file
             become: true
             file:
-                path: "{{ 1tb_mnt_point }}/.mounted"
+                path: "{{ mnt_point_1tb }}/.mounted"
                 state: touch
                 mode: 0555
