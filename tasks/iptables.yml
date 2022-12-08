@@ -47,7 +47,7 @@
         
         -   name: iptables - docker chain logging - set
             become: true
-            shell: iptables -L DOCKER 3 -i wlo1 -m limit --limit 2/second -j LOG --log-prefix="IP-ACCEPT " --log-level 4
+            shell: iptables -I DOCKER 3 -i wlo1 -m limit --limit 2/second -j LOG --log-prefix="IP-ACCEPT " --log-level 4
             when: "ipt_dockerlog == false and ipt_dockerchain"
 
         -   name: iptables - docker chain logging - update
