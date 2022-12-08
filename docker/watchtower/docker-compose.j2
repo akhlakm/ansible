@@ -11,6 +11,10 @@ services:
             - "WATCHTOWER_NOTIFICATION_GOTIFY_URL=http://gotify/"
             - WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=Acp0CkYpmU8iver
             - WATCHTOWER_NOTIFICATION_GOTIFY_TLS_SKIP_VERIFY=true
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

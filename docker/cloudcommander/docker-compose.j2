@@ -7,6 +7,10 @@ services:
             - 8000
         volumes:
             - ~:/root
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

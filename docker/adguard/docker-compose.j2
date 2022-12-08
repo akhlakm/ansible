@@ -1,5 +1,5 @@
 ---
-version: '3.3'
+version: '3.9'
 services:
     adguard:
         container_name: adguard
@@ -16,6 +16,10 @@ services:
             # admin port
             - "3003"
         image: adguard/adguardhome
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

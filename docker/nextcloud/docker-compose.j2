@@ -7,6 +7,10 @@ services:
         command: redis-server --requirepass redpass
         expose:
             - 6379
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
     nextcloud:
         image: nextcloud
@@ -27,6 +31,10 @@ services:
 
         depends_on:
             - ncredis
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

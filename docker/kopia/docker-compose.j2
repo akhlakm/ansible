@@ -38,6 +38,10 @@ services:
             KOPIA_PASSWORD: {{ kopia_password }}
             TZ: America/New_York
             USER: {{ kopia_user }}
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

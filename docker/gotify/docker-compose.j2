@@ -11,6 +11,10 @@ services:
             - TZ=America/New_York
         volumes:
             - "./data:/app/data"
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

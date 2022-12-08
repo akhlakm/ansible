@@ -17,6 +17,10 @@ services:
         volumes:
             - "{{docker_fs_directory}}/authelia/config:/config:shared"
             - "{{docker_fs_directory}}/authelia/secrets:/secrets"
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

@@ -21,6 +21,10 @@ services:
             - ./users:/app/users
         expose:
             - 17442
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
     ytdl-mongo-db:
         image: mongo:latest
@@ -30,6 +34,10 @@ services:
             - 27017
         volumes:
             - ./db/:/data/db
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

@@ -13,6 +13,10 @@ services:
             - "/:/host:ro,rslave"
         expose:
             - 9100
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
     hostjournal:
         image: alpine
@@ -25,6 +29,10 @@ services:
             - sh
             - "-c"
             - "tail -f /var/log/messages | grep -f /patterns.txt | tee /tmp/hostjournal.log"
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
     promtail:
         image: grafana/promtail:2.6.0
@@ -37,6 +45,10 @@ services:
             - "{{docker_fs_directory}}/nginx-proxy/data/logs:/nginx:ro"
             - "{{docker_fs_directory}}/authelia/config/:/authelia:ro"
             - ./logs:/tmp/:shared
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

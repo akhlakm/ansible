@@ -8,6 +8,10 @@ services:
             - 4444
             - 7900
         shm_size: 2g
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
     autosel:
         image: autosel:latest
@@ -21,6 +25,10 @@ services:
         volumes:
             - ./data:/app/data
             - $HOME/_media_inbox:/app/downloads
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

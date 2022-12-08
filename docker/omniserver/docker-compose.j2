@@ -13,6 +13,10 @@ services:
             - ./config:/config
             - $HOME/_media_inbox:/inbox
             - "{{ mnt_point_1tb }}/{{ omniserver_media_dir }}:/media"
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

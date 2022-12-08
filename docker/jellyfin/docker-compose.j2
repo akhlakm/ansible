@@ -13,6 +13,10 @@ services:
             - ./config:/config
             - ./cache:/cache
             - ~/media:/media
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:

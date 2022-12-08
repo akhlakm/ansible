@@ -10,6 +10,10 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock:ro
             - "{{ mnt_point_1tb }}:/mnt"
         restart: unless-stopped
+        deploy:
+            resources:
+                limits:
+                    cpus: '2.0'
 
 networks:
     default:
