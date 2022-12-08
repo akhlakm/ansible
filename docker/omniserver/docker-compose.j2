@@ -12,7 +12,7 @@ services:
         volumes:
             - ./config:/config
             - $HOME/_media_inbox:/inbox
-            - "{{ mnt_point_1tb }}/{{ omniserver_media_dir }}:/media"
+            - "{{ mnt_point_1tb }}{{ omniserver_media_dir }}:/media"
         deploy:
             resources:
                 limits:
