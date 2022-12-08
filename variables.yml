@@ -22,6 +22,7 @@ docker_network: dockernet
 
 etc_hosts:
     - "{{ localm }}:192.168.0.102"
+    - "dns.{{ localm }}:192.168.0.102"
 
 # hdds
 hdd_dev_1tb: /dev/sda1
