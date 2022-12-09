@@ -11,7 +11,7 @@ services:
             - TZ=America/New_York
         volumes:
             - ./config:/config
-            - $HOME/_media_inbox:/inbox
+            - $HOME/0inbox:/inbox
             - "{{ mnt_point_1tb }}{{ omniserver_media_dir }}:/media"
         deploy:
             resources:
