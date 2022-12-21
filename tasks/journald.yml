@@ -1,0 +1,8 @@
+---
+-   name: Allow journalctl persistence
+    when: "'server' in group_names"
+    tags: ["journal", "setup"]
+    become: true
+    file:
+        path: "/var/log/journal"
+        state: directory

@@ -42,7 +42,8 @@
             tags: ["setup"]
 
         -   import_tasks: tasks/iptables.yml
-        
+        -   import_tasks: tasks/journald.yml
+
         # order matters!
         -   import_tasks: docker/postgres/main.yml
         -   import_tasks: docker/authelia/main.yml
