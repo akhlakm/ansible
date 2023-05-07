@@ -70,4 +70,4 @@
         -   import_tasks: docker/ytdl/main.yml
         -   import_tasks: docker/jellyfin/main.yml
         -   import_tasks: docker/omniserver/main.yml
-        -   import_tasks: docker/autosel/main.yml
+        # -   import_tasks: docker/autosel/main.yml
