@@ -4,5 +4,6 @@
     become: true
     lineinfile:
         path: /etc/hosts
+        regexp: "    {{ item.split(':')[0] }}$"
         line: "{{ item.split(':')[1] }}    {{ item.split(':')[0] }}"
     loop: "{{ etc_hosts }}"

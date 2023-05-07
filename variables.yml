@@ -19,10 +19,11 @@ dnf_package_list:
     - python3-pip
 
 docker_network: dockernet
+server_host: 192.168.1.100
 
 etc_hosts:
-    - "{{ localm }}:192.168.1.100"
-    - "dns.{{ localm }}:192.168.1.100"
+    - "{{ localm }}:{{server_host}}"
+    - "dns.{{ localm }}:{{server_host}}"
 
 # hdds
 hdd_dev_1tb: /dev/sda1
