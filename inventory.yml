@@ -28,4 +28,6 @@ all:
                     ansible_host: localhost
                     ansible_python_interpreter: /opt/homebrew/Caskroom/miniforge/base/bin/python
                     manage_brew_packages: false
-
+                legion:
+                    ansible_host: localhost
+                    manage_dnf_packages: false
