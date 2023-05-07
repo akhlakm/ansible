@@ -19,7 +19,7 @@ all:
                 docker_required: true
             hosts:
                 envypro:
-                    ansible_host: 192.168.0.102
+                    ansible_host: 192.168.1.100
         local:
             vars:
                 ansible_connection: local
