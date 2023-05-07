@@ -29,9 +29,9 @@
             import_tasks: tasks/firewall.yml
             tags: ["network"]
         
-        -   name: Check hdds mounted 
-            import_tasks: tasks/mount.yml
-            tags: ["boot"]
+        # -   name: Check hdds mounted 
+        #     import_tasks: tasks/mount.yml
+        #     tags: ["boot"]
 
         -   name: Check local hosts
             import_tasks: tasks/etc_hosts.yml
