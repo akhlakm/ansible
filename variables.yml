@@ -21,8 +21,8 @@ dnf_package_list:
 docker_network: dockernet
 
 etc_hosts:
-    - "{{ localm }}:192.168.0.102"
-    - "dns.{{ localm }}:192.168.0.102"
+    - "{{ localm }}:192.168.1.100"
+    - "dns.{{ localm }}:192.168.1.100"
 
 # hdds
 hdd_dev_1tb: /dev/sda1
