@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ## To enable this check, run
 ## git config core.hooksPath .githooks
 
