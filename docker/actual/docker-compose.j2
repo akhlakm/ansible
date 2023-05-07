@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+    actual:
+        container_name: actual
+        image: actualbudget/actual-server
+        restart: unless-stopped
+        expose:
+            - 5006
+        environment:
+            - TZ=America/New_York
+        volumes:
+            - "./data:/data"
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"

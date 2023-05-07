@@ -52,22 +52,23 @@
         # order does not matter
         -   import_tasks: docker/ddclient/main.yml
         -   import_tasks: docker/homepage/main.yml
-        -   import_tasks: docker/adguard/main.yml
-        -   import_tasks: docker/monitoring/main.yml
-        -   import_tasks: docker/hostinfo/main.yml
+        # -   import_tasks: docker/adguard/main.yml
+        # -   import_tasks: docker/monitoring/main.yml
+        # -   import_tasks: docker/hostinfo/main.yml
         -   import_tasks: docker/portainer/main.yml
         -   import_tasks: docker/pyload/main.yml
-        -   import_tasks: docker/nextcloud/main.yml
-        -   import_tasks: docker/kopia/main.yml
+        # -   import_tasks: docker/nextcloud/main.yml
+        # -   import_tasks: docker/kopia/main.yml
         # -   import_tasks: docker/vaultwarden/main.yml
         -   import_tasks: docker/dozzle/main.yml
         -   import_tasks: docker/scrutiny/main.yml
         -   import_tasks: docker/gotify/main.yml
         -   import_tasks: docker/watchtower/main.yml
-        -   import_tasks: docker/kavita/main.yml
-        -   import_tasks: docker/grocy/main.yml
+        # -   import_tasks: docker/kavita/main.yml
+        # -   import_tasks: docker/grocy/main.yml
         -   import_tasks: docker/cloudcommander/main.yml
         -   import_tasks: docker/ytdl/main.yml
         -   import_tasks: docker/jellyfin/main.yml
         # -   import_tasks: docker/omniserver/main.yml
         # -   import_tasks: docker/autosel/main.yml
+        -   import_tasks: docker/actual/main.yml
