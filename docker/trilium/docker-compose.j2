@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+    trilium:
+        container_name: trilium
+        image: zadam/trilium:0.60-latest
+        restart: unless-stopped
+        user: root
+        environment:
+            - PUID=1000
+            - PGID=1000
+        security_opt:
+            - no-new-privileges:true
+        expose:
+            - 8080
+        environment:
+            - TZ=America/New_York
+        volumes:
+            - "./data:/home/node/trilium-data"
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"

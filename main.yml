@@ -72,3 +72,4 @@
         # -   import_tasks: docker/omniserver/main.yml
         # -   import_tasks: docker/autosel/main.yml
         -   import_tasks: docker/actual/main.yml
+        -   import_tasks: docker/trilium/main.yml
