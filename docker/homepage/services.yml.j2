@@ -1,12 +1,12 @@
 - Entertainment:
     - Media:
         icon: firewalla
-        href: http://media.{{ localm }}/
+        href: http://media.{{ localm }}
         server: my-docker
         container: omniserver
     - Jellyfin:
         icon: jellyfin
-        href: "http://jellyfin.{{ localm }}"
+        href: "https://tv.{{ domain }}"
         server: my-docker
         container: jellyfin
         widget:
@@ -15,12 +15,12 @@
             key: "{{ apikeys.jellyfin }}"
     - Downloader:
         icon: pyload
-        href: http://dload.{{ localm }}/
+        href: https://dload.{{ domain }}
         server: my-docker
         container: pyload
     - Youtube-dl:
         icon: youtubedl
-        href: http://ytdl.{{ localm }}/
+        href: https://ytdl.{{ domain }}
         server: my-docker
         container: ytdl
 
@@ -28,20 +28,26 @@
 - Documents:
     - Library:
         icon: kavita
-        href: https://lib.{{ domain }}/
+        href: https://lib.{{ domain }}
+    - Wiki:
+        icon: etherpad
+        href: https://wiki.{{ domain }}/
+    - Actual:
+        icon: actual
+        href: https://actual.{{ domain }}/
     - Kitchen:
         icon: grocy
         href: https://kitchen.{{ domain }}/
     - Nextcloud:
         icon: nextcloud
-        href: https://nc.{{ domain }}/
+        href: https://nc.{{ domain }}
         server: my-docker
         container: nextcloud
 
 - Monitoring:
     - Notifications:
         icon: gotify
-        href: "http://logs.{{ localm }}"
+        href: "https://{{ domain }}/logs/"
         widget:
             type: gotify
             url: "http://gotify:80"
@@ -56,12 +62,12 @@
         href: http://scrutiny.{{ localm }}/
     - Dozzle:
         icon: dozzle
-        href: http://dozzle.{{ localm }}/
+        href: https://dozzle.{{ domain }}
 
 - Tools:
     - Backup:
         icon: kopia
-        href: http://backup.{{ localm }}/
+        href: https://kopia.{{ domain }}
         server: my-docker
         container: kopia
     - Commander:
@@ -69,11 +75,9 @@
         href: http://cmd.{{ localm }}/
     - AdGuard:
         icon: adguard-home
-        href: http://dns.{{ localm }}/
+        href: https://adguard.{{ domain }}
         server: my-docker
         container: adguard
-
-- Setup:
     - NginX:
         icon: nginx
         href: http://{{ localm }}:81/
@@ -81,6 +85,11 @@
         container: nginx-proxy
     - Portainer:
         icon: portainer
-        href: http://port.{{ localm }}/
+        href: https://{{ domain }}/port/
         server: my-docker
         container: portainer
+
+- Others:
+    - Router:
+        icon: coredns
+        href: http://192.168.1.254
