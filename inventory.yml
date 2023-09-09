@@ -20,14 +20,14 @@ all:
             hosts:
                 envypro:
                     ansible_host: 192.168.1.100
-        local:
-            vars:
-                ansible_connection: local
-            hosts:
-                macair:
-                    ansible_host: localhost
-                    ansible_python_interpreter: /opt/homebrew/Caskroom/miniforge/base/bin/python
-                    manage_brew_packages: false
-                legion:
-                    ansible_host: localhost
-                    manage_dnf_packages: false
+        # local:
+        #     vars:
+        #         ansible_connection: local
+        #     hosts:
+        #         macair:
+        #             ansible_host: localhost
+        #             ansible_python_interpreter: /opt/homebrew/Caskroom/miniforge/base/bin/python
+        #             manage_brew_packages: false
+        #         legion:
+        #             ansible_host: localhost
+        #             manage_dnf_packages: false
