@@ -1,3 +1,6 @@
+# See details: https://github.com/KostyaEsmukov/smtp_to_telegram
+---
+
 services:
     telegram:
         image: kostyaesmukov/smtp_to_telegram
@@ -15,4 +18,4 @@ services:
 networks:
     default:
         external: true
-        name: "{{ docker_network }}"
+        name: "{{ docker.network }}"

@@ -11,16 +11,18 @@ USAGE:
     cd ansible
     git config core.hooksPath .githooks
 
+    # Setup password
+    vi .password
+
     # View tags
-    export PASS=<vault password>
     ansible-playbook -i "192.168.0.100," main.yml --list-tags
 
     # Run tag(s), example:
     ansible-playbook -i server.com, main.yml --tags setup,boot
 
-    # Decrypt/encrypt the vault:
-    ansible-vault decrypt vault.yml
-    ansible-vault encrypt vault.yml
+    # Decrypt/encrypt the configuration:
+    ansible-vault decrypt config.yml
+    ansible-vault encrypt config.yml
 ```
 
 Run `ansible-playbook --help` for additional options.
