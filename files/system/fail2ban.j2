@@ -2,8 +2,15 @@
 bantime = {{ fail2ban.bantime }}
 findtime = {{ fail2ban.findtime }}
 maxretry = {{ fail2ban.maxretry }}
+
+# get information from systemd journal
 backend = systemd
+
+# ban ips on all ports using firewalld
 banaction_allports = firewallcmd-ipset
+
+# logging into stdout causes logging to systemd journal, if it running as service.
+logtarget = SYSTEMD-JOURNAL
 
 [sshd]
 enabled = true
