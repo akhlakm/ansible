@@ -3,7 +3,7 @@
   name: Setup Server
 
   vars_files:
-    - vault.yml
+    - config.yml
 
   tasks:
     - name: Host information
