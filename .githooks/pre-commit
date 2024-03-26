@@ -11,6 +11,6 @@ fi
 if [[ $(head -n 1 $VFILE) == *ANSIBLE_VAULT* ]]; then
     exit 0;
 else
-    echo "Error: Attempt to commit with unencrypted vault.yml"
+    echo "Error: Attempt to commit with unencrypted $VFILE"
     exit 1;
 fi
