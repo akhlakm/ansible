@@ -1,7 +1,13 @@
 - tags: sendmail
   block:
-    -   name: mailrc
+    -   name: Setup .mailrc
         template:
             src: files/system/mailrc.j2
             dest: "/home/{{ ansible_user }}/.mailrc"
-            mode: 0440
+            mode: 0440  # r--r-----
+
+    -   name: Setup notify command
+        template:
+            src: files/bin/notify.sh
+            dest: "/home/{{ ansible_user }}/.local/bin/notify"
+            mode: 0750  # rwxr-xr--
