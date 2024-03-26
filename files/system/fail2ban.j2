@@ -1,0 +1,8 @@
+[DEFAULT]
+bantime = {{ fail2ban.bantime }}
+findtime = {{ fail2ban.findtime }}
+maxretry = {{ fail2ban.maxretry }}
+backend = systemd
+
+[sshd]
+enabled = true

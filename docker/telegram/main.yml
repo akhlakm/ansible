@@ -1,7 +1,7 @@
 ---
 
 -   tags: telegram
-    when: "'telegram' in docker_containers"
+    when: "'telegram' in containers.enable"
     block:
         -   name: Telegram
             file:
@@ -10,7 +10,7 @@
 
         -   name: Telegram - docker compose
             template:
-                src: "docker-compose.j2"
+                src: "docker-compose.yml"
                 dest: "{{docker.directory}}/telegram/docker-compose.yml"
 
         -   name: Telegram - run
@@ -23,14 +23,13 @@
         - debug:
             var: output
 
--   when: "'telegram' in remove_containers"
-    stat:
+-   stat:
         path: "{{docker.directory}}/telegram/"
     register: cdir
 
 -   tags: telegram
     when:
-        - "'telegram' in stop_containers"
+        - "'telegram' in containers.disable"
         - cdir.stat.isdir is defined and cdir.stat.isdir
     block:
         -   name: Telegram - stop
@@ -40,7 +39,7 @@
 
 -   tags: telegram
     when:
-        - "'telegram' in remove_containers"
+        - "'telegram' in containers.remove"
         - cdir.stat.isdir is defined and cdir.stat.isdir
     block:
         -   name: Telegram - stop

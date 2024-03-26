@@ -1,0 +1,43 @@
+services:
+    # Server to store the logs.
+    loki:
+        image: grafana/loki
+        container_name: loki
+        volumes:
+            - ./configs/loki_config.yml:/etc/loki/local-config.yaml
+        expose:
+            - 3100
+        command: -config.file=/etc/loki/local-config.yaml
+
+    # Parse the logs and send to the log server.
+    promtail:
+        image: grafana/promtail
+        container_name: promtail
+        command: -config.file=/etc/promtail/config.yml
+        environment:
+            - TZ=America/New_York
+        volumes:
+            - ./logs:/logs/:shared
+            - ./configs/promtail_config.yml:/etc/promtail/config.yml
+            # - "{{docker.directory}}/nginx-proxy/data/logs:/nginx:ro"
+            # - "{{docker.directory}}/authelia/config/:/authelia:ro"
+        expose:
+            - 9080
+
+    # Visualize the logs.
+    grafana:
+        container_name: grafana
+        hostname: grafana
+        user: "0"
+        image: grafana/grafana
+        volumes:
+            - ./configs/grafana_datasources.yml:/etc/grafana/provisioning/datasources/all.yaml
+            - ./configs/grafana_config.ini:/etc/grafana/config.ini
+            - ./grafana_data:/var/lib/grafana
+        expose:
+            - 3000
+
+networks:
+    default:
+        external: true
+        name: "{{ docker.network }}"

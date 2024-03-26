@@ -14,6 +14,9 @@ USAGE:
     # Setup password
     vi .password
 
+    # Install ansible collections
+    ansible-galaxy collection install -r ansible-collections.yml
+
     # View tags
     ansible-playbook -i "192.168.0.100," main.yml --list-tags
 

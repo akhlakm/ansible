@@ -17,6 +17,7 @@
 
     # Setup firewall rules and logging
     - import_tasks: tasks/firewall.yml
+    - import_tasks: tasks/fail2ban.yml
 
     # Install docker
     - import_tasks: tasks/get_docker.yml

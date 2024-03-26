@@ -1,27 +1,92 @@
 ---
 
--   tags: ["docker", "monitor"]
-    when: "'server' in group_names"
+-   tags: monitoring
+    when: "'monitoring' in containers.enable"
     block:
-        -   set_fact:
-                container_root: "{{docker_fs_directory}}/monitoring"
-
-        -   name: monitoring - dir
+        -   name: Monitoring
             file:
-                path: "{{ container_root }}/"
+                path: "{{docker.directory}}/monitoring/"
                 state: directory
 
-        -   name: monitoring - configs
-            copy:
-                src: "config/"
-                dest: "{{ container_root }}/config/"
+        -   name: Monitoring
+            file:
+                path: "{{docker.directory}}/monitoring/logs"
+                state: directory
 
-        -   name: monitoring - docker compose
+        -   name: Monitoring - docker compose
             template:
-                src: docker-compose.j2
-                dest: "{{ container_root }}/docker-compose.yml"
+                src: "docker-compose.yml"
+                dest: "{{docker.directory}}/monitoring/docker-compose.yml"
 
-        -   name: monitoring - run
-            docker_compose:
-                project_src: "{{ container_root }}/"
+        -   name: Monitoring - configs - copy
+            copy:
+                src: "configs/"
+                dest: "{{ docker.directory }}/monitoring/configs/"
+
+        # -   name: Monitoring - hostinfo - copy
+        #     copy:
+        #         src: "hostinfo.sh"
+        #         dest: "{{ docker.directory }}/monitoring/hostinfo.sh"
+
+        -   name: Monitoring - hostinfo
+            become: true
+            script: hostinfo.sh
+            args:
+                chdir: "{{ docker.directory }}/monitoring/"
+                creates: "{{ docker.directory }}/monitoring/logs/host_journal.log"
+
+        -   name: Monitoring - run
+            community.docker.docker_compose_v2:
+                project_src: "{{docker.directory}}/monitoring/"
+                remove_orphans: yes
                 state: present
+            register: output
+
+        - debug:
+            var: output.stderr_lines
+
+-   stat:
+        path: "{{docker.directory}}/monitoring/"
+    register: cdir
+
+-   tags: monitoring
+    when:
+        - "'monitoring' in containers.disable"
+        - cdir.stat.isdir is defined and cdir.stat.isdir
+    block:
+        -   name: Monitoring - stop
+            community.docker.docker_compose_v2:
+                project_src: "{{docker.directory}}/monitoring/"
+                state: stopped
+
+-   tags: monitoring
+    when:
+        - "'monitoring' in containers.remove"
+        - cdir.stat.isdir is defined and cdir.stat.isdir
+    block:
+        -   name: Monitoring - stop
+            community.docker.docker_compose_v2:
+                project_src: "{{docker.directory}}/monitoring/"
+                state: absent
+            register: output
+
+        -   name: Monitoring - remove
+            community.docker.docker_compose_v2:
+                project_src: "{{docker.directory}}/monitoring/"
+                remove_volumes: yes
+                remove_images: all
+                state: absent
+            register: output
+
+        -   debug:
+                var: output
+
+        -   name: Monitoring - remove docker compose
+            file:
+                path: "{{docker.directory}}/monitoring/docker-compose.yml"
+                state: absent
+
+        -   name: Monitoring - remove container directory
+            file:
+                path: "{{docker.directory}}/monitoring/"
+                state: absent

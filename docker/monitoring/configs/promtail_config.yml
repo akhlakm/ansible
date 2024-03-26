@@ -1,0 +1,43 @@
+server:
+    http_listen_port: 9080
+    grpc_listen_port: 0
+
+positions:
+    filename: /tmp/positions.yaml
+
+clients:
+    -   url: http://loki:3100/loki/api/v1/push
+        batchsize: 1000
+
+scrape_configs:
+    - job_name: hostjournal
+      static_configs:
+          - targets:
+                - localhost
+            labels:
+                app: journal
+                __path__: /logs/hostjournal.log
+
+    # - job_name: nginx-access
+    #   static_configs:
+    #       - targets:
+    #             - localhost
+    #         labels:
+    #             app: nginx-access
+    #             __path__: /nginx/*json
+
+    # - job_name: nginx-fallback
+    #   static_configs:
+    #       - targets:
+    #             - localhost
+    #         labels:
+    #             app: nginx-fallback
+    #             __path__: /nginx/fallback_access.log
+
+    # - job_name: authelia
+    #   static_configs:
+    #       - targets:
+    #             - localhost
+    #         labels:
+    #             app: authelia
+    #             __path__: /authelia/authelia.log
