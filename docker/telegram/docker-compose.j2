@@ -1,0 +1,16 @@
+services:
+    telegram:
+        image: kostyaesmukov/smtp_to_telegram
+        container_name: telegram
+        restart: unless-stopped
+        user: "root"
+        environment:
+            - ST_TELEGRAM_CHAT_IDS={{ telegram.chat_ids }}
+            - ST_TELEGRAM_BOT_TOKEN={{ telegram.bot_token }}
+        expose:
+            - 2525
+
+networks:
+    default:
+        external: true
+        name: "{{ docker_network }}"
