@@ -2,10 +2,15 @@
 ## To enable this check, run
 ## git config core.hooksPath .githooks
 
-if [[ $(head -n 1 config.yml) == *ANSIBLE_VAULT* ]]; then
+VFILE=config.yml
+
+if git diff --cached --exit-code --name-only $VFILE; then
+    exit 0;
+fi
+
+if [[ $(head -n 1 $VFILE) == *ANSIBLE_VAULT* ]]; then
     exit 0;
 else
     echo "Error: Attempt to commit with unencrypted vault.yml"
     exit 1;
 fi
-
