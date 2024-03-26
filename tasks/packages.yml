@@ -45,6 +45,7 @@
       register: dnf_output
 
     - name: Autoremove unneeded packages
+      become: true
       ansible.builtin.dnf:
         autoremove: yes
 
