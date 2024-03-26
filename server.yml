@@ -1,0 +1,25 @@
+---
+- hosts: all
+  name: Setup Server
+
+  vars_files:
+    - vault.yml
+
+  tasks:
+    - name: Host information
+      debug:
+        msg: |
+          host: {{ inventory_hostname }} ip: {{ ansible_host }}
+          groups: {{ group_names }} os: {{ ansible_os_family }}
+
+    # Install OS specific packages
+    - import_tasks: tasks/packages.yml
+
+    # Setup firewall rules and logging
+    - import_tasks: tasks/firewall.yml
+
+    # Install docker
+    - import_tasks: tasks/get_docker.yml
+
+    # Journalctl persistence
+    - import_tasks: tasks/journald.yml

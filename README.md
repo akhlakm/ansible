@@ -13,18 +13,14 @@ USAGE:
 
     # View tags
     export PASS=<vault password>
-    ansible-playbook main.yml --list-tags
+    ansible-playbook -i "192.168.0.100," main.yml --list-tags
 
     # Run tag(s), example:
-    ansible-playbook main.yml --tags setup,boot
+    ansible-playbook -i server.com, main.yml --tags setup,boot
 
     # Decrypt/encrypt the vault:
     ansible-vault decrypt vault.yml
     ansible-vault encrypt vault.yml
-
-    # Run on specific hosts, with the become pass prompt
-    ansible-playbook main.yml --limit legion -K
-
 ```
 
 Run `ansible-playbook --help` for additional options.

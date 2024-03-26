@@ -1,0 +1,114 @@
+# Ensure docker is installed
+---
+- name: Get Docker (Debian)
+  tags: get-docker
+  when:
+    - ansible_os_family == "Debian"
+
+  block:
+    - name: docker installed
+      shell: docker --version
+      register: cmd_result
+      failed_when: "cmd_result.rc != 0"
+      changed_when: false
+
+  rescue:
+    - name: download get-docker
+      get_url:
+        url: https://get.docker.com
+        dest: /tmp/get-docker.sh
+        mode: 0744
+
+    - name: execute get-docker
+      become: true
+      environment:
+        CHANNEL: stable
+      shell: /tmp/get-docker.sh > get-docker.log
+
+- name: Install Docker (RedHat)
+  tags: get-docker
+  when:
+    - ansible_os_family == "RedHat"
+
+  block:
+    - name: docker installed
+      shell: docker --version
+      register: cmd_result
+      failed_when: "cmd_result.rc != 0"
+      changed_when: false
+
+  rescue:
+    - name: uninstall podman
+      when: ansible_os_family == "RedHat"
+      dnf:
+        name:
+          - podman
+          - runc
+        state: absent
+
+    - name: Add docker repository
+      ansible.builtin.yum_repository:
+        name: docker
+        description: Docker YUM repo
+        baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+
+    - name: Install Docker-CE
+      ansible.builtin.dnf:
+        name: docker-ce
+        nobest: true
+        state: present
+
+
+## Common Items
+- name: docker has been installed
+  become: true
+  shell: docker --version
+  register: cmd_result
+  failed_when: "cmd_result.rc != 0"
+  changed_when: false
+
+- name: create docker local fs directory
+  file:
+    path: "{{ docker_fs_directory }}"
+    mode: 0755
+    state: directory
+
+- name: docker group exists
+  become: true
+  group:
+    name: docker
+    state: present
+
+- name: ansible user a member of the docker group
+  become: true
+  user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: yes
+
+- name: create docker network
+  become: true
+  shell: "docker network create {{ docker_network }}"
+
+- name: Docker Service
+  block:
+    - name: docker service started
+      become: true
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+  rescue:
+    - name: docker service error
+      debug:
+        msg: |
+          Docker service is not running.
+          Please check manually.
+
+- name: Docker SDK
+  become: true
+  pip:
+    name:
+      - docker
+      - docker-compose

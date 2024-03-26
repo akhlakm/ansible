@@ -1,86 +1,92 @@
 # Ensure all packages are installed and updated. apt on Debian.  Homebrew on Mac.
 ---
-
 # Ubuntu (Debian)
--   name: Update and install APT packages
-    when:
-        - ansible_os_family == 'Debian'
-        - manage_apt_packages
-    block:
-        -   name: update APT cache
-            become: true 
-            apt:
-                update_cache: true 
-                cache_valid_time: 3600
+- name: Update and install APT packages
+  tags: packages
+  when:
+    - ansible_os_family == 'Debian'
+    - manage_apt_packages
+  block:
+    - name: update APT cache
+      become: true
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
 
-        -   name: upgrade APT packages
-            become: true 
-            apt:
-                upgrade: safe
+    - name: upgrade APT packages
+      become: true
+      apt:
+        upgrade: safe
 
-        -   name: install APT packages
-            become: true
-            apt:
-                pkg: "{{ item }}"
-                state: present
-            loop: "{{ apt_package_list }}"
-            register: apt_output
+    - name: install APT packages
+      become: true
+      apt:
+        pkg: "{{ item }}"
+        state: present
+      loop: "{{ apt_package_list }}"
+      register: apt_output
 
 # CentOS (RedHat)
--   name: Update and install DNF packages
-    when:
-        - ansible_os_family == 'RedHat'
-        - manage_dnf_packages
-    block:
-        -   name: update DNF cache
-            become: true 
-            dnf:
-                update_cache: true 
+- name: Update and install DNF packages
+  tags: packages
+  when:
+    - ansible_os_family == 'RedHat'
+    - manage_dnf_packages
+  block:
+    - name: update DNF cache
+      become: true
+      dnf:
+        update_cache: true
 
-        -   name: install DNF packages
-            become: true
-            dnf:
-                pkg: "{{ item }}"
-                state: present
-            loop: "{{ dnf_package_list }}"
-            register: dnf_output
+    - name: install DNF packages
+      become: true
+      dnf:
+        pkg: "{{ item }}"
+        state: present
+      loop: "{{ dnf_package_list }}"
+      register: dnf_output
+
+    - name: Autoremove unneeded packages
+      ansible.builtin.dnf:
+        autoremove: yes
 
 # Mac (Darwin)
--   name: Update and install Brew packages
-    when:
-        - ansible_os_family == "Darwin"
-        - manage_brew_packages
-    block:
-        -   name: upgrade brew and all packages
-            community.general.homebrew:
-                update_homebrew: true 
-                upgrade_all: true
-            register: brew_output
-            ignore_errors: true
+- name: Update and install Brew packages
+  tags: packages
+  when:
+    - ansible_os_family == "Darwin"
+    - manage_brew_packages
+  block:
+    - name: upgrade brew and all packages
+      community.general.homebrew:
+        update_homebrew: true
+        upgrade_all: true
+      register: brew_output
+      ignore_errors: true
 
-        -   name: install brew packages
-            community.general.homebrew:
-                name: "{{ brew_package_list | join(',') }}"
-                state: present
-                upgrade_all: false
-            register: brew_output
+    - name: install brew packages
+      community.general.homebrew:
+        name: "{{ brew_package_list | join(',') }}"
+        state: present
+        upgrade_all: false
+      register: brew_output
 
-        -   name: brew installed/updated packages
-            debug:
-                msg: "{{ brew_output.changed_pkgs }}"
+    - name: brew installed/updated packages
+      debug:
+        msg: "{{ brew_output.changed_pkgs }}"
 
-        -   name: brew unchanged packages
-            debug:
-                msg: "{{ brew_output.unchanged_pkgs }}"
+    - name: brew unchanged packages
+      debug:
+        msg: "{{ brew_output.unchanged_pkgs }}"
 
-        -   name: brew install casks
-            community.general.homebrew_cask:
-                name: "{{ item }}"
-                state: present
-                install_options: "appdir=/Applications"
-                accept_external_apps: true
-                upgrade_all: false
-                update_homebrew: false
-                greedy: false
-            loop: "{{ brew_cask_list }}"
-            ignore_errors: true
+    - name: brew install casks
+      community.general.homebrew_cask:
+        name: "{{ item }}"
+        state: present
+        install_options: "appdir=/Applications"
+        accept_external_apps: true
+        upgrade_all: false
+        update_homebrew: false
+        greedy: false
+      loop: "{{ brew_cask_list }}"
+      ignore_errors: true
