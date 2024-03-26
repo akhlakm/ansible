@@ -2,6 +2,11 @@
 ---
 - tags: fail2ban
   block:
+    - name: Fail2Ban service
+      ansible.builtin.service:
+        name: fail2ban
+        state: started
+
     - name: Fail2Ban config
       become: true
       template:
@@ -11,15 +16,17 @@
         group: root
         mode: 0440
 
-    - name: Fail2Ban service
-      ansible.builtin.service:
-        name: fail2ban
-        state: enabled
+    - name: Fail2Ban reload
+      become: true
+      command: fail2ban-client reload
+      register: output
+    
+    - debug:
+        var: output.stdout_lines
 
-    - name: Fail2Ban service
-      ansible.builtin.service:
-        name: fail2ban
-        state: restarted
+
+
+# More details: https://www.plesk.com/blog/various/using-fail2ban-to-secure-your-server/
 
 ## Check status
 # fail2ban-client status sshd
