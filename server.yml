@@ -23,3 +23,6 @@
 
     # Journalctl persistence
     - import_tasks: tasks/journald.yml
+
+    # Setup sendmail smtp host and port
+    - import_tasks: tasks/sendmail.yml

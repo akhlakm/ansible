@@ -1,0 +1,7 @@
+- tags: sendmail
+  block:
+    -   name: mailrc
+        template:
+            src: files/system/mailrc.j2
+            dest: "/home/{{ ansible_user }}/.mailrc"
+            mode: 0440

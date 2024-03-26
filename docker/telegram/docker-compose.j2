@@ -9,6 +9,8 @@ services:
             - ST_TELEGRAM_BOT_TOKEN={{ telegram.bot_token }}
         expose:
             - 2525
+        ports:
+            - 25:2525
 
 networks:
     default:
