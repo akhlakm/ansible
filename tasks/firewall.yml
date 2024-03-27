@@ -26,16 +26,25 @@
         permanent: yes
         state: enabled
 
-    # These ports are automatically allowed via iptables if run using docker.
     -   name: Open firewalld ports
         become: true
         ansible.posix.firewalld:
             permanent: yes
             immediate: yes
             port: "{{item.port}}/{{item.proto}}"
-            state: "{{item.state}}"
+            state: enabled
             zone: "{{item.zone}}"
-        with_items: "{{ firewall }}"
+        with_items: "{{ firewall.open }}"
+
+    -   name: Block firewalld ports
+        become: true
+        ansible.posix.firewalld:
+            permanent: yes
+            immediate: yes
+            port: "{{item.port}}/{{item.proto}}"
+            state: disabled
+            zone: "{{item.zone}}"
+        with_items: "{{ firewall.block }}"
 
 # Logging with firewalld
 # sudo firewall-cmd --set-log-denied all
