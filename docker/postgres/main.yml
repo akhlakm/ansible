@@ -1,70 +1,9 @@
 ---
-
--   tags: postgres
-    when: "'postgres' in containers.enable"
-    block:
-        -   name: postgres container directory
-            file:
-                path: "{{docker.directory}}/postgres/"
-                state: directory
-
-        -   name: postgres data directory
-            file:
-                path: /data/postgres/
-                state: directory
-
-        -   name: postgres - docker compose
-            template:
-                src: docker-compose.yml
-                dest: "{{docker.directory}}/postgres/docker-compose.yml"
-
-        -   name: postgres - run
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/postgres/"
-                remove_orphans: yes
-                state: present
-            register: output
-
-        - debug:
-            var: output
-
--   stat:
-        path: "{{docker.directory}}/postgres/"
-    register: cdir
-
--   tags: postgres
-    when:
-        - "'postgres' in containers.disable"
-        - cdir.stat.isdir is defined and cdir.stat.isdir
-    block:
-        -   name: postgres - stop
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/postgres/"
-                state: stopped
-
--   tags: postgres
-    when:
-        - "'postgres' in containers.remove"
-        - cdir.stat.isdir is defined and cdir.stat.isdir
-    block:
-        -   name: postgres - stop
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/postgres/"
-                state: absent
-            register: output
-
-        -   name: postgres - remove
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/postgres/"
-                remove_volumes: yes
-                remove_images: all
-                state: absent
-            register: output
-
-        -   debug:
-                var: output
-
-        -   name: postgres - remove container directory
-            file:
-                path: "{{docker.directory}}/postgres/"
-                state: absent
+- tags: postgres
+  include: ../container.yml
+  vars:
+    name: postgres
+    datadir: yes
+    configs: yes
+    templates: []
+    extra_dirs: [logs, pg_data]

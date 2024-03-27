@@ -1,0 +1,104 @@
+---
+- when: "name in containers.enable"
+  block:
+    - name: "Create container directory for {{name}}"
+      file:
+        path: "{{docker.directory}}/{{name}}/"
+        state: directory
+
+    - name: "Create data directory for user data and backup for {{name}}"
+      file:
+        path: /data/{{name}}/
+        state: directory
+      when: "datadir"
+
+    - name: "Set {{name}} data directory permissions"
+      become: true
+      file:
+        path: "/data/{{name}}/"
+        state: directory
+        group: docker
+        mode: 0770
+      when: "datadir"
+
+    - name: "Create extra directory for volume mount"
+      file:
+        path: "{{docker.directory}}/{{name}}/{{item}}"
+        state: directory
+      with_items: "{{extra_dirs}}"
+
+    - name: "Set extra directory permissions"
+      become: true
+      file:
+        path: "{{docker.directory}}/{{name}}/{{item}}"
+        state: directory
+        group: docker
+        mode: 0770
+      with_items: "{{extra_dirs}}"
+
+    - name: "Copy {{name}}/configs"
+      copy:
+        src: "{{name}}/configs/"
+        dest: "{{ docker.directory }}/{{name}}/configs/"
+      when: "configs"
+
+    - name: "Copy template to container directory"
+      template:
+        src: "{{name}}/{{item}}"
+        dest: "{{docker.directory}}/{{name}}/{{item}}"
+      with_items: "{{templates}}"
+
+    - name: "Copy {{name}}/docker-compose.yml"
+      template:
+        src: "{{name}}/docker-compose.yml"
+        dest: "{{docker.directory}}/{{name}}/docker-compose.yml"
+
+    - name: "Run {{name}} docker container"
+      community.docker.docker_compose_v2:
+        project_src: "{{docker.directory}}/{{name}}/"
+        remove_orphans: yes
+        state: present
+      register: output
+
+    - debug:
+        var: output.stderr_lines
+
+## Tasks to remove the container.
+- stat:
+    path: "{{docker.directory}}/{{name}}/docker-compose.yml"
+  register: cdir
+
+- when:
+    - "name in containers.disable"
+    - cdir.stat.isfile is defined and cdir.stat.isfile
+  block:
+    - name: "Stop {{name}} docker container"
+      community.docker.docker_compose_v2:
+        project_src: "{{docker.directory}}/{{name}}/"
+        state: stopped
+
+- when:
+    - "name in containers.remove"
+    - cdir.stat.isdir is defined and cdir.stat.isdir
+  block:
+    - name: "Stop {{name}} docker container"
+      community.docker.docker_compose_v2:
+        project_src: "{{docker.directory}}/{{name}}/"
+        state: absent
+      register: output
+
+    - name: "Remove {{name}} docker container"
+      community.docker.docker_compose_v2:
+        project_src: "{{docker.directory}}/{{name}}/"
+        remove_volumes: yes
+        remove_images: all
+        state: absent
+      register: output
+
+    - debug:
+        var: output
+
+    - name: "Remove {{name}} directory"
+      file:
+        path: "{{docker.directory}}/{{name}}/"
+        state: absent

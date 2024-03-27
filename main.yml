@@ -10,15 +10,15 @@
         # order matters!
         -   import_tasks: docker/telegram/main.yml
         -   import_tasks: docker/monitoring/main.yml
-        # -   import_tasks: docker/postgres/main.yml
+        -   import_tasks: docker/postgres/main.yml
         # -   import_tasks: docker/authelia/main.yml
         # -   import_tasks: docker/nginx-proxy/main.yml
 
         # order does not matter
+        # -   import_tasks: docker/actual/main.yml
         # -   import_tasks: docker/ddclient/main.yml
         # -   import_tasks: docker/homepage/main.yml
         # -   import_tasks: docker/adguard/main.yml
-        # -   import_tasks: docker/hostinfo/main.yml
         # -   import_tasks: docker/portainer/main.yml
         # -   import_tasks: docker/pyload/main.yml
         # -   import_tasks: docker/nextcloud/main.yml
@@ -35,6 +35,5 @@
         # -   import_tasks: docker/jellyfin/main.yml
         # -   import_tasks: docker/omniserver/main.yml
         # -   import_tasks: docker/autosel/main.yml
-        # -   import_tasks: docker/actual/main.yml
         # -   import_tasks: docker/trilium/main.yml
         # -   import_tasks: docker/silicon/main.yml

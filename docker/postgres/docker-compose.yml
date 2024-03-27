@@ -3,30 +3,28 @@ services:
         image: postgres:16-alpine
         container_name: postgres
         restart: unless-stopped
+        command: postgres -c config_file=/postgresql.conf
+        user: "1000:1000"
         environment:
             - USER_UID=1000
             - USER_GID=1000
             - POSTGRES_USER={{ postgres.username }}
             - POSTGRES_PASSWORD={{ postgres.userpass }}
+            - PGDATA=/pg_data
         expose:
             - 5432
         volumes:
             # Backup path
-            -  /data/postgres:/data                 # backup here
+            -  /data/postgres:/data
 
-            # Storage paths
-            - ./pg_data:/var/lib/postgresql/data    # PGDATA
-
-            # Log files path
+            # Mounted volumes
+            - ./pg_data:/pg_data
             - ./logs:/logs
 
-            # Configuration files
-            - ./configs/postgresql.conf:/var/lib/postgresql/data/postgresql.conf
-            - ./configs/pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
-
-            # Helper scripts
+            # Configs and scripts
             - ./configs/postgr.sh:/postgr.sh
-
+            - ./configs/pg_hba.conf:/pg_hba.conf
+            - ./configs/postgresql.conf:/postgresql.conf
 
 networks:
     default:
