@@ -15,7 +15,7 @@
 
         -   name: postgres - docker compose
             template:
-                src: "docker-compose.yml"
+                src: docker-compose.yml
                 dest: "{{docker.directory}}/postgres/docker-compose.yml"
 
         -   name: postgres - run
