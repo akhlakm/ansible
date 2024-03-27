@@ -15,11 +15,8 @@ services:
             - "81:81"
             - "443:443"
         volumes:
-            # Backup path
-            -  /data/nginx-proxy:/data:shared
-
             # Mounted volumes
-            - ./logs:/logs
+            - ./data/:/data:shared
             - ./letsencrypt:/etc/letsencrypt
 
             # Configs and scripts

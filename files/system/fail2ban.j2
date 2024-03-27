@@ -7,7 +7,7 @@ maxretry = {{ fail2ban.maxretry }}
 backend = systemd
 
 # ban ips on all ports using firewalld
-banaction_allports = firewallcmd-ipset
+banaction_allports = iptables-allports
 
 # logging into stdout causes logging to systemd journal, if it running as service.
 logtarget = SYSTEMD-JOURNAL

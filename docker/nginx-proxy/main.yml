@@ -6,4 +6,4 @@
     datadir: yes
     configs: yes
     templates: []
-    extra_dirs: [logs, letsencrypt]
+    extra_dirs: [data, letsencrypt]
