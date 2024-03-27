@@ -1,0 +1,31 @@
+---
+- tags: sshd
+  block:
+    - name: sshd_config
+      become: true
+      template:
+        src: files/system/sshd_config
+        dest: /etc/ssh/sshd_config
+        mode: 0400
+
+    - name: sshd service restarted
+      become: true
+      service:
+        name: sshd
+        state: restarted
+        enabled: true
+
+    - name: remove short ssh moduli - 1
+      become: true
+      shell: awk '$5 >= 3071' /etc/ssh/moduli > /tmp/moduli.tmp
+
+    - name: remove short ssh moduli - 2
+      become: true
+      shell: mv /tmp/moduli.tmp /etc/ssh/moduli
+
+    - name: notify_ssh_login
+      become: true
+      template:
+        src: files/system/notify_ssh_login.sh
+        dest: /etc/profile.d/notify_ssh_login.sh
+        mode: 0755

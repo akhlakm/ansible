@@ -12,6 +12,9 @@
           host: {{ inventory_hostname }} ip: {{ ansible_host }}
           groups: {{ group_names }} os: {{ ansible_os_family }}
 
+    # Setup ssh
+    - import_tasks: tasks/sshd.yml
+
     # Install OS specific packages
     - import_tasks: tasks/packages.yml
 

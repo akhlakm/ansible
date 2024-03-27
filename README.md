@@ -29,3 +29,36 @@ USAGE:
 ```
 
 Run `ansible-playbook --help` for additional options.
+
+
+## Initial Setup
+To handover the control to ansible, the following things should be set.
+```sh
+# Edit the sudoers file
+vi /etc/sudoers
+
+# Enable NOPASSWD for the wheel/root group
+%wheel  ALL=(ALL)       NOPASSWD: ALL
+
+# Create the ansible user
+useradd <ansible_user>
+usermod -a -G wheel <ansible_user>
+
+# Set a password, empty not allowed for sshd without PAM
+passwd <ansible_user>
+
+# Create ansible user ssh directory
+mkdir /home/<ansible_user>/.ssh
+
+# Copy the ssh authorized key
+cp ~/.ssh/authorized_keys /home/<ansible_user>/.ssh/
+
+# Update permission
+chown <ansible_user> /home/<ansible_user>/.ssh/authorized_keys
+
+# Update your system
+dnf update | apt update
+
+# Exit and reboot
+reboot now
+```
