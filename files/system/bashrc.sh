@@ -98,6 +98,32 @@ havecmd() { type "$1" &> /dev/null; }
 # the `test` may get overwritten
 alias __test=$(which test)
 
+
+# MacOS specific items
+# ------------------------------
+if [[ $(uname -s) == "Darwin" ]]; then
+	export BASH_SILENCE_DEPRECATION_WARNING=1
+
+	# Homebrew
+	if ! havecmd brew; then
+		if [[ -f /opt/homebrew/bin/brew ]]; then
+			eval "$(/opt/homebrew/bin/brew shellenv)"
+		else
+			echo "Homebrew not found, please consider installing it."
+		fi
+	fi
+
+	# tr error
+	export LC_CTYPE=C
+
+	# colors
+	export CLICOLOR=1
+	alias ls="ls -G -tovh"
+	alias ll="ls -G -lah"
+fi
+
+
+
 # Allows you to see repository status in your prompt.
 # Helper function to install it.
 # ------------------------------
@@ -114,6 +140,17 @@ git_prompt() {
 	source ~/.git-prompt.sh && echo "git-prompt loaded."
 	unset git_prompt
 }
+
+# Makefile at the home directory.
+# Useful to automate setups.
+# ---------------------------------
+if havecmd make; then
+	if [[ ! -f ~/Makefile ]]; then
+		if [[ -f ~/Dot_Files/Makefile ]]; then
+			ln -s Dot_Files/Makefile Makefile
+		fi
+	fi
+fi
 
 # Git helpers
 # Some later items depend on it.
@@ -157,6 +194,13 @@ if havecmd git; then
 
 	# checkout from stash[0]
 	alias gitcs='git checkout "stash@{0}" --'
+
+	# git ids
+	gitme() {
+		git config user.name akhlakm
+		git config user.email me@akhlakm.com
+	}
+
 else
 	echo "Git not found. Please consider installing it."
 fi
@@ -171,7 +215,7 @@ __exit_code() {
 	if [[ exit_code -eq 0 ]]; then
 		echo ''
 	else
-		echo -e " ${RED}?${exit_code}${NC}"
+		echo " ?${exit_code}"
 	fi
 }
 
@@ -195,9 +239,9 @@ xterm_setcolor() {
 
 		# Our custom style
 		if havecmd __git_ps1; then
-			PS1="${debian_chroot:+($debian_chroot)}\[${user}\]\u\[${BLACK}\]@\[${host}\]\h\[${WHITE}\]:\[${path}\]\w\[$MAGENTA\]\$(__git_ps1)\[${NC}\]\$(__exit_code)\$ "
+			PS1="${debian_chroot:+($debian_chroot)}\[${user}\]\u\[${BLACK}\]@\[${host}\]\h\[${WHITE}\]:\[${path}\]\w\[$MAGENTA\]\$(__git_ps1)\[${NC}\]\[$RED\]\$(__exit_code)\[${NC}\]\$ "
 		else
-			PS1="${debian_chroot:+($debian_chroot)}\[${user}\]\u\[${BLACK}\]@\[${host}\]\h\[${WHITE}\]:\[${path}\]\w\[$MAGENTA\]\[${NC}\]\$(__exit_code)\$ "
+			PS1="${debian_chroot:+($debian_chroot)}\[${user}\]\u\[${BLACK}\]@\[${host}\]\h\[${WHITE}\]:\[${path}\]\w\[$RED\]\$(__exit_code)\[${NC}\]\$ "
 		fi
 
 	else
@@ -231,8 +275,8 @@ xterm_setcolor $green $GREEN $BLUE
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
 	test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-	alias ls='ls --color=auto -lh'
-	alias dir='dir --color=auto'
+	alias ls='ls --color=auto -tovh'
+	alias dir='dir --color=auto -tvh'
 	alias vdir='vdir --color=auto'
 
 	alias grep='grep --color=auto'
@@ -252,12 +296,14 @@ alias l='ls -CF'
 alias cls='clear'
 
 # Set the default editor
-if havecmd kate; then
-	export EDITOR=kate
-elif havecmd subl; then
-	export EDITOR=subl
+if havecmd nvim; then
+	export EDITOR=nvim
 elif havecmd code; then
 	export EDITOR=code
+elif havecmd subl; then
+	export EDITOR=subl
+elif havecmd kate; then
+	export EDITOR=kate
 elif havecmd vim; then
 	export EDITOR=vim
 else
@@ -285,7 +331,6 @@ alias remove="/bin/rm -I"
 # example 'say "ding dong"'
 alias say='spd-say'
 
-
 # display sorted directory file size
 alias dus="du --max-depth=1 | sort -nr"
 
@@ -297,9 +342,8 @@ alias gh='history | grep'
 # grep running processes
 alias gp='ps aux | grep'
 
-# Copy with a progress bar, limit speed to 50mbps
-alias rsync2="rsync -avrRh --info=progress2"
-alias rsynclimit="rsync -avhrR --progress --bwlimit=50000"
+# Copy with a progress bar and summary stats
+alias rsync2="rsync -avrRh --info=progress2 --stats"
 
 # Navigation helpers
 # ---------------------------------
@@ -327,6 +371,9 @@ alias d='dirs -v'
 alias b='pushd +1'
 alias p='pwd'
 
+# path to dotfiles
+alias cddot="cd $(dirname $(realpath ~/.bashrc))"
+
 # case insensitive search inside current directory
 search() {
 	command find . -iname "*$1*"
@@ -342,16 +389,18 @@ if havecmd git; then alias gitconfig='${EDITOR} ~/.gitconfig'; fi
 # source bashrc
 alias src='. ~/.bashrc'
 
+# wezterm config
+alias wezrc='${EDITOR} ~/.wezterm.lua'
+
 # frequently used cd
 alias cddl='cd ~/Downloads'
 alias cddoc='cd ~/Documents'
 alias cdt='cd /tmp'
 alias cdmed='cd /media/$(whoami)'
+alias cdws='cd ~/work-Space'
 
-__test -d ~/Dropbox &&          alias cddb='cd ~/Dropbox'
-__test -d ~/data &&             alias cdd='cd ~/data'
-__test -d ~/programs &&         alias cdp='cd ~/programs'
-__test -d ~/mnt &&              alias cdm='cd ~/mnt'
+__test -d ~/Dropbox 			&&  alias cddb='cd ~/Dropbox'
+__test -d ~/mnt 				&&	alias cdm='cd ~/mnt'
 
 # Installed applications helpers
 # ---------------------------------
@@ -384,7 +433,11 @@ alias term="gnome-terminal --working-directory"
 
 # open file with default application
 function open () {
-	if havecmd xdg-open; then
+	if havecmd open; then
+		# MacOS
+		command open "$@" >/dev/null 2>&1
+	elif havecmd xdg-open; then
+		# Linux
 		xdg-open "$@">/dev/null 2>&1
 	elif havecmd start; then
 		# cygwin or git-bash
@@ -395,18 +448,22 @@ function open () {
 # open a jupyter lab workspace
 jlab() {
 	# check if server is running or start it
-	nc -4 -d -z -w 1 127.0.0.1 7800 &> /dev/null
+	nc -4 -d -z -w 1 127.0.0.1 8888 &> /dev/null
 	if [[ $? -ne 0 ]]; then
-		nohup jupyter lab --port=7800 --no-browser &> /tmp/jlab.log &
+		nohup jupyter lab &> /tmp/jlab.log &
 		sleep 1
 	fi
-	open "http://localhost:7800/$1"
 }
 
 # Quick google search
 # example 'google "Weather Today"'
 google() {
 	open "https://www.google.com/search?q=$@"
+}
+
+# Ignore a dropbox folder
+dbignore() {
+	attr -s com.dropbox.ignored -V 1 "$1"
 }
 
 # usage: localhost <path> <port>
@@ -506,9 +563,13 @@ alias ssha='eval $(ssh-agent) && ssh-add'
 ssh-key() {
 	if [[ ! -f ~/.ssh/id_ed25519 ]]; then
 		ssh-keygen -t ed25519 -C ${HOSTNAME}
-		chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys
+		chmod 700 ~/.ssh
+		eval $(ssh-agent) && ssh-add
+		__test -f ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
 	fi
 	cat ~/.ssh/id_ed25519.pub
+	echo "You can add this key to your github at: https://github.com/settings/keys"
+	echo "Make sure to use the SSH URL for cloning a repository, or update remote URL."
 }
 
 # upload the ed25519 ssh public key to a server
@@ -518,6 +579,52 @@ ssh-upload-key() {
 	[[ -f ~/.ssh/id_ed25519 ]] || ssh-key
 	cat ~/.ssh/id_ed25519.pub | ssh ${username}@${server} "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
 }
+
+# login and create ssh tunnel to localhost port on remote.
+ssht() {
+	# ssh-tunnel akhlak@remotehost.com 4455 8080
+	remote=$1
+
+	[[ -n $remote ]] || {
+		echo "Usage: ssht <user@remote.com>"
+		return 1
+	}
+
+	# tunnel settings
+	read -p "Remote Server Port: " remoteport
+	read -p "Local Port: " localport
+
+	# use remoteport if none specified
+	localport=${localport:-$remoteport}
+
+	if curl localhost:$localport &> /dev/null; then
+		echo "Port $localport busy"
+	else
+		echo "ssh -L 127.0.0.1:$localport:127.0.0.1:$remoteport $remote"
+		ssh -L 127.0.0.1:$localport:127.0.0.1:$remoteport $remote
+	fi
+}
+
+# update and shutdown
+shutup() {
+    sudo apt update && sudo apt upgrade -y && sudo shutdown
+}
+
+sphinx-docs() {
+	dotdir=$(dirname $(realpath ~/.bashrc))
+	mkdir -p docs
+	rsync -avrRh $dotdir/sphinx/./ docs/./ || exit 1
+	echo "SphinxDocs created"
+}
+
+quarto-docs() {
+	dotdir=$(dirname $(realpath ~/.bashrc))
+	mkdir -p docs
+	rsync -avrRh $dotdir/quarto/./ docs/./ || exit 1
+	echo "QuartoDocs created"
+}
+
+CONDAHOME=~
 
 # END OF BASHRC DEFINITIONS
 # -----------------------------------------------------------------
@@ -536,9 +643,7 @@ else
 
 # xterm_setcolor \$green \$RED
 
-# If you have a backup in Dropbox, create a symlink. Examples -
-# sudo ln -s ~/Dropbox/dotfiles/work_aliases ~/.bash_aliases
-# sudo ln -s ~/Dropbox/dotfiles/home_aliases ~/.bash_aliases
+# export CONDAHOME=${CONDAHOME}
 
 EOF
 	vi ~/.bash_aliases
@@ -554,3 +659,21 @@ if ! shopt -oq posix; then
 	. /etc/bash_completion
   fi
 fi
+
+# Set Conda init. Update CONDAHOME from bash_aliases if necessary.
+__conda_setup="$('$CONDAHOME/miniconda3/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
+if [ $? -eq 0 ]; then
+    eval "$__conda_setup"
+else
+    if [ -f "$CONDAHOME/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "$CONDAHOME/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="$CONDAHOME/miniconda3/bin:$PATH"
+    fi
+fi
+unset __conda_setup
+
+# Works if NVM is installed (for node.js).
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
