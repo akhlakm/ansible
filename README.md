@@ -32,7 +32,9 @@ Run `ansible-playbook --help` for additional options.
 
 
 ## Initial Setup
-To handover the control to ansible, the following things should be set.
+To handover the control to ansible, the following things should be set first
+by logging in using the `root` account.
+
 ```sh
 # Edit the sudoers file
 vi /etc/sudoers
