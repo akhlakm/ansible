@@ -1,0 +1,10 @@
+---
+- tags: nginx
+  include: ../container.yml
+  vars:
+      name: nginx
+      datadir: no
+      configs: yes
+      templates:
+          - nginx.conf
+      extra_dirs: [logs]

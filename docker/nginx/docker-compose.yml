@@ -1,0 +1,23 @@
+# See details: https://github.com/KostyaEsmukov/smtp_to_telegram
+---
+
+services:
+    nginx:
+        image: nginx:stable-alpine
+        restart: unless-stopped
+        user: 1000:1000
+        environment:
+            - TZ='America/New_York'
+            - "NGINX_HOST={{ domain.name }}"
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./logs:/logs
+            - ./configs:/configs
+            - ./nginx.conf:/etc/nginx/nginx.conf
+
+networks:
+    default:
+        external: true
+        name: "{{ docker.network }}"
