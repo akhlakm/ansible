@@ -11,6 +11,16 @@
   become: true
   shell: timedatectl set-timezone America/New_York
 
+- name: Create datadir
+  tags: datadir
+  become: true
+  shell: mkdir -p /data
+
+- name: Chown datadir
+  tags: datadir
+  become: true
+  shell: "chown {{ ansible_user }} /data"
+
 - name: notify_ssh_login
   tags: notify-login
   become: true
@@ -18,3 +28,8 @@
     src: files/system/notify_ssh_login.sh
     dest: /etc/profile.d/notify_ssh_login.sh
     mode: 0755
+
+- name: bashrc
+  copy:
+    src: files/system/bashrc.sh
+    dest: "/home/{{ ansible_user }}/.bashrc"
