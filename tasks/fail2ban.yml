@@ -2,11 +2,6 @@
 ---
 - tags: fail2ban
   block:
-    - name: Fail2Ban service
-      ansible.builtin.service:
-        name: fail2ban
-        state: started
-
     - name: Fail2Ban config
       become: true
       template:
@@ -15,6 +10,11 @@
         owner: root
         group: root
         mode: 0440
+
+    - name: Fail2Ban service
+      ansible.builtin.service:
+        name: fail2ban
+        state: started
 
     - name: Fail2Ban reload
       become: true

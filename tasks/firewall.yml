@@ -4,6 +4,11 @@
   tags: firewall
   when: ansible_os_family == "RedHat"
   block:
+    - name: Add ansible port first
+      become: true
+      shell: "firewall-offline-cmd -p {{ansible_port}}:tcp"
+      changed_when: false
+
     - name: FirewallD is started
       ansible.builtin.service:
         name: firewalld
