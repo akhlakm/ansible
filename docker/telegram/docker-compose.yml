@@ -8,6 +8,7 @@ services:
         restart: unless-stopped
         user: "root"
         environment:
+            - TZ='America/New_York'
             - ST_TELEGRAM_CHAT_IDS={{ telegram.chat_ids }}
             - ST_TELEGRAM_BOT_TOKEN={{ telegram.bot_token }}
         expose:

@@ -6,6 +6,7 @@ services:
         command: postgres -c config_file=/postgresql.conf
         user: "1000:1000"
         environment:
+            - TZ='America/New_York'
             - USER_UID=1000
             - USER_GID=1000
             - POSTGRES_USER={{ postgres.username }}

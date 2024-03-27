@@ -18,6 +18,7 @@ services:
         user: "0"
         image: grafana/grafana
         environment:
+            - TZ='America/New_York'
             - "GF_SECURITY_ADMIN_USER={{ domain.username }}"
             - "GF_SECURITY_ADMIN_PASSWORD={{ domain.userpass }}"
         volumes:
