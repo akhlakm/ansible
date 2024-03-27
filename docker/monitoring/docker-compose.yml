@@ -18,8 +18,8 @@ services:
         user: "0"
         image: grafana/grafana
         environment:
-            - "GF_SECURITY_ADMIN_USER={{ monitoring.grafana_user }}"
-            - "GF_SECURITY_ADMIN_PASSWORD={{ monitoring.grafana_pass }}"
+            - "GF_SECURITY_ADMIN_USER={{ domain.username }}"
+            - "GF_SECURITY_ADMIN_PASSWORD={{ domain.userpass }}"
         volumes:
             - ./configs/grafana_datasources.yml:/etc/grafana/provisioning/datasources/all.yaml
             - ./configs/grafana_config.ini:/etc/grafana/config.ini

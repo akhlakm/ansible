@@ -28,6 +28,9 @@
     create_home: false
     state: present
 
+- name: 
+  become: true
+  shell: setfacl -R -m u:promtail:rX /var/log
 
 - name: restart promtail service
   block:

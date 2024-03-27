@@ -6,6 +6,9 @@ clients:
     - url: "http://localhost:{{ monitoring.loki_port }}/loki/api/v1/push"
       batchsize: 1000
 
+positions:
+    filename: /tmp/promtail-positions.yaml
+
 scrape_configs:
     - job_name: system
       static_configs:
@@ -21,9 +24,6 @@ scrape_configs:
           max_age: 12h
           labels:
               job: systemd-journal
-        #   relabel_configs:
-        #       - source_labels: ["__journal__systemd_unit"]
-        #         target_label: "unit"
 
     # - job_name: nginx-access
     #   static_configs:

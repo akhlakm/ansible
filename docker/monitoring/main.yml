@@ -8,8 +8,6 @@
                 path: "{{docker.directory}}/monitoring/"
                 state: directory
 
-        -   import_tasks: promtail.yml
-
         -   name: Monitoring - docker compose
             template:
                 src: "docker-compose.yml"
@@ -35,6 +33,8 @@
 
         - debug:
             var: output.stderr_lines
+
+        -   import_tasks: promtail.yml
 
 -   stat:
         path: "{{docker.directory}}/monitoring/"
