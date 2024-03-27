@@ -8,10 +8,7 @@
                 path: "{{docker.directory}}/monitoring/"
                 state: directory
 
-        -   name: Monitoring
-            file:
-                path: "{{docker.directory}}/monitoring/logs"
-                state: directory
+        -   import_tasks: promtail.yml
 
         -   name: Monitoring - docker compose
             template:
@@ -23,17 +20,11 @@
                 src: "configs/"
                 dest: "{{ docker.directory }}/monitoring/configs/"
 
-        # -   name: Monitoring - hostinfo - copy
-        #     copy:
-        #         src: "hostinfo.sh"
-        #         dest: "{{ docker.directory }}/monitoring/hostinfo.sh"
-
-        -   name: Monitoring - hostinfo
-            become: true
-            script: hostinfo.sh
-            args:
-                chdir: "{{ docker.directory }}/monitoring/"
-                creates: "{{ docker.directory }}/monitoring/logs/host_journal.log"
+        -   name: Grafana config
+            ansible.builtin.template:
+                src: "grafana_config.ini"
+                dest: "{{ docker.directory }}/monitoring/configs/grafana_config.ini"
+                mode: "0644"
 
         -   name: Monitoring - run
             community.docker.docker_compose_v2:
