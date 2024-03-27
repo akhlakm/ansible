@@ -1,83 +1,14 @@
 ---
+- tags: monitoring
+  include: ../container.yml
+  vars:
+      name: monitoring
+      datadir: no
+      configs: yes
+      templates:
+          - grafana_config.ini
+      extra_dirs: []
 
--   tags: monitoring
-    when: "'monitoring' in containers.enable"
-    block:
-        -   name: Monitoring
-            file:
-                path: "{{docker.directory}}/monitoring/"
-                state: directory
-
-        -   name: Monitoring - docker compose
-            template:
-                src: "docker-compose.yml"
-                dest: "{{docker.directory}}/monitoring/docker-compose.yml"
-
-        -   name: Monitoring - configs - copy
-            copy:
-                src: "configs/"
-                dest: "{{ docker.directory }}/monitoring/configs/"
-
-        -   name: Grafana config
-            ansible.builtin.template:
-                src: "grafana_config.ini"
-                dest: "{{ docker.directory }}/monitoring/configs/grafana_config.ini"
-                mode: "0644"
-
-        -   name: Monitoring - run
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/monitoring/"
-                remove_orphans: yes
-                state: present
-            register: output
-
-        - debug:
-            var: output.stderr_lines
-
-        -   import_tasks: promtail.yml
-
--   stat:
-        path: "{{docker.directory}}/monitoring/"
-    register: cdir
-
--   tags: monitoring
-    when:
-        - "'monitoring' in containers.disable"
-        - cdir.stat.isdir is defined and cdir.stat.isdir
-    block:
-        -   name: Monitoring - stop
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/monitoring/"
-                state: stopped
-
--   tags: monitoring
-    when:
-        - "'monitoring' in containers.remove"
-        - cdir.stat.isdir is defined and cdir.stat.isdir
-    block:
-        -   name: Monitoring - stop
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/monitoring/"
-                state: absent
-            register: output
-
-        -   name: Monitoring - remove
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/monitoring/"
-                remove_volumes: yes
-                remove_images: all
-                state: absent
-            register: output
-
-        -   debug:
-                var: output
-
-        -   name: Monitoring - remove docker compose
-            file:
-                path: "{{docker.directory}}/monitoring/docker-compose.yml"
-                state: absent
-
-        -   name: Monitoring - remove container directory
-            file:
-                path: "{{docker.directory}}/monitoring/"
-                state: absent
+# Promtail will run on host, not as a container
+- tags: monitoring
+  import_tasks: promtail.yml

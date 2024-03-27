@@ -22,7 +22,7 @@ services:
             - "GF_SECURITY_ADMIN_PASSWORD={{ domain.userpass }}"
         volumes:
             - ./configs/grafana_datasources.yml:/etc/grafana/provisioning/datasources/all.yaml
-            - ./configs/grafana_config.ini:/etc/grafana/config.ini
+            - ./grafana_config.ini:/etc/grafana/config.ini
             - ./grafana_data:/var/lib/grafana
         command: --config /etc/grafana/config.ini
         ports:
