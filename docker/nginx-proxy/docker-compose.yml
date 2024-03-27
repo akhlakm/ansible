@@ -1,28 +1,34 @@
-version: "3"
 services:
-    nginx:
+    nginx-proxy:
         image: "jc21/nginx-proxy-manager:latest"
         container_name: nginx-proxy
         restart: unless-stopped
+        user: "root"        # must be run as root
         environment:
-            TZ: 'America/New_York'
+            - TZ='America/New_York'
+            - USER_UID=1000
+            - USER_GID=1000
+            - PUID=1000
+            - PGID=1000
         ports:
             - "80:80"
             - "81:81"
             - "443:443"
         volumes:
-            - ./data:/data:shared
+            # Backup path
+            -  /data/nginx-proxy:/data:shared
+
+            # Mounted volumes
+            - ./logs:/logs
             - ./letsencrypt:/etc/letsencrypt
-            - ./snippets:/snippets
-        deploy:
-            resources:
-                limits:
-                    cpus: '2.0'
+
+            # Configs and scripts
+            - ./configs:/snippets
 
 networks:
     default:
         external: true
-        name: "{{ docker_network }}"
+        name: "{{ docker.network }}"
 
 ## SSL Certificate for wildcard domain
 # docker exec -it nginx-proxy_app_1 bash

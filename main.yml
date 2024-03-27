@@ -11,8 +11,8 @@
         -   import_tasks: docker/telegram/main.yml
         -   import_tasks: docker/monitoring/main.yml
         -   import_tasks: docker/postgres/main.yml
+        -   import_tasks: docker/nginx-proxy/main.yml
         # -   import_tasks: docker/authelia/main.yml
-        # -   import_tasks: docker/nginx-proxy/main.yml
 
         # order does not matter
         # -   import_tasks: docker/actual/main.yml

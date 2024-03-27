@@ -1,27 +1,9 @@
 ---
-
--   tags: ["docker", "nginx"]
-    when: "'server' in group_names"
-    block:
-        -   set_fact:
-                container_root: "{{docker_fs_directory}}/nginx-proxy"
-
-        -   name: NPM - custom dir
-            file:
-                path: "{{ container_root }}/data/nginx/custom/"
-                state: directory
-
-        -   name: NPM - configurations
-            copy:
-                src: snippets/
-                dest: "{{ container_root }}/data/nginx/custom/"
-
-        -   name: NPM - docker compose
-            template:
-                src: docker-compose.j2
-                dest: "{{ container_root }}/docker-compose.yml"
-
-        -   name: NPM - run
-            docker_compose:
-                project_src: "{{ container_root }}/"
-                state: present
+- tags: nginx-proxy
+  include: ../container.yml
+  vars:
+    name: nginx-proxy
+    datadir: yes
+    configs: yes
+    templates: []
+    extra_dirs: [logs, letsencrypt]
