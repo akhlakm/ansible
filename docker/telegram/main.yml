@@ -1,70 +1,9 @@
 ---
-
--   tags: telegram
-    when: "'telegram' in containers.enable"
-    block:
-        -   name: Telegram
-            file:
-                path: "{{docker.directory}}/telegram/"
-                state: directory
-
-        -   name: Telegram - docker compose
-            template:
-                src: "docker-compose.yml"
-                dest: "{{docker.directory}}/telegram/docker-compose.yml"
-
-        -   name: Telegram - run
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/telegram/"
-                remove_orphans: yes
-                state: present
-            register: output
-
-        - debug:
-            var: output
-
--   stat:
-        path: "{{docker.directory}}/telegram/"
-    register: cdir
-
--   tags: telegram
-    when:
-        - "'telegram' in containers.disable"
-        - cdir.stat.isdir is defined and cdir.stat.isdir
-    block:
-        -   name: Telegram - stop
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/telegram/"
-                state: stopped
-
--   tags: telegram
-    when:
-        - "'telegram' in containers.remove"
-        - cdir.stat.isdir is defined and cdir.stat.isdir
-    block:
-        -   name: Telegram - stop
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/telegram/"
-                state: absent
-            register: output
-
-        -   name: Telegram - remove
-            community.docker.docker_compose_v2:
-                project_src: "{{docker.directory}}/telegram/"
-                remove_volumes: yes
-                remove_images: all
-                state: absent
-            register: output
-
-        -   debug:
-                var: output
-
-        -   name: Telegram - remove docker compose
-            file:
-                path: "{{docker.directory}}/telegram/docker-compose.yml"
-                state: absent
-
-        -   name: Telegram - remove container directory
-            file:
-                path: "{{docker.directory}}/telegram/"
-                state: absent
+- tags: telegram
+  include: ../container.yml
+  vars:
+    name: telegram
+    datadir: no
+    configs: no
+    templates: []
+    extra_dirs: []
