@@ -22,10 +22,3 @@
     - name: remove short ssh moduli - 2
       become: true
       shell: mv /tmp/moduli.tmp /etc/ssh/moduli
-
-    - name: notify_ssh_login
-      become: true
-      template:
-        src: files/system/notify_ssh_login.sh
-        dest: /etc/profile.d/notify_ssh_login.sh
-        mode: 0755

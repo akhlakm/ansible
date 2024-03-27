@@ -5,3 +5,16 @@
   file:
     path: "/var/log/journal"
     state: directory
+
+- name: Update Timezone
+  tags: timezone
+  become: true
+  shell: timedatectl set-timezone America/New_York
+
+- name: notify_ssh_login
+  tags: notify-login
+  become: true
+  template:
+    src: files/system/notify_ssh_login.sh
+    dest: /etc/profile.d/notify_ssh_login.sh
+    mode: 0755

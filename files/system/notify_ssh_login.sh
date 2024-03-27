@@ -1,22 +1,30 @@
-#!/bin/sh
+#!/bin/bash
 CHATID="{{ telegram.chat_ids }}"
 TOKEN="{{ telegram.bot_token }}"
 
 URL="https://api.telegram.org/bot$TOKEN/sendMessage"
 
-TMPFILE='/tmp/ipinfotemp.txt'
+TMPFILE="/tmp/ipinfotemp.txt"
+IPLOGS="/home/{{ ansible_user }}/.iplogs.txt"
 
 if [ -n "$SSH_CLIENT" ]; then
-  IP=$(echo $SSH_CLIENT | awk '{print $1}')
-  HOSTNAME=$(hostname -f)
-  IPADDR=$(hostname -I | awk '{print $1}')
-  curl https://ipinfo.io/$IP -s -o $TMPFILE
+    dt=$(date '+%m/%d/%Y %H:%M:%S %Z')
+    IP=$(echo $SSH_CLIENT | awk '{print $1}')
+    HOSTNAME=$(hostname -f)
+    IPADDR=$(hostname -I | awk '{print $1}')
 
-  CITY=$(cat $TMPFILE | jq '.city' | sed 's/"//g')
-  COUNTRY=$(cat $TMPFILE | jq '.country' | sed 's/"//g')
-  TEXT="Login as ${USER} on $IPADDR ($HOSTNAME) from $IP ($CITY, $COUNTRY)"
+    touch $IPLOGS
 
-  curl -s --max-time 10 -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT" $URL > /dev/null
+    if ! grep -q $IP $IPLOGS; then
+        curl https://ipinfo.io/$IP -s -o $TMPFILE
 
-  rm $TMPFILE
+        CITY=$(cat $TMPFILE | jq '.city' | sed 's/"//g')
+        COUNTRY=$(cat $TMPFILE | jq '.country' | sed 's/"//g')
+        TEXT="$dt - Login: ${USER} on $IPADDR ($HOSTNAME) from [$IP] $CITY, $COUNTRY."
+
+        curl -s --max-time 10 -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT" $URL > /dev/null
+
+        rm $TMPFILE
+        echo "${TEXT}" >> $IPLOGS
+    fi
 fi
