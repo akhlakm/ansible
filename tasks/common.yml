@@ -29,7 +29,8 @@
     dest: /etc/profile.d/notify_ssh_login.sh
     mode: 0755
 
-- name: bashrc
+- name: Copy bashrc
+  tags: copy-bashrc
   copy:
     src: files/system/bashrc.sh
     dest: "/home/{{ ansible_user }}/.bashrc"
