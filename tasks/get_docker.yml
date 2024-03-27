@@ -31,7 +31,7 @@
     - ansible_os_family == "RedHat"
 
   block:
-    - name: docker installed
+    - name: docker installed?
       shell: docker --version
       register: cmd_result
       failed_when: "cmd_result.rc != 0"
@@ -39,69 +39,80 @@
 
   rescue:
     - name: uninstall podman
+      become: true
       when: ansible_os_family == "RedHat"
       dnf:
         name:
           - podman
           - runc
         state: absent
+      failed_when: false
+
+    - name: Install yum-utils
+      become: true
+      shell: yum install -y yum-utils
 
     - name: Add docker repository
-      ansible.builtin.yum_repository:
-        name: docker
-        description: Docker YUM repo
-        baseurl: https://download.docker.com/linux/centos/docker-ce.repo
+      become: true
+      shell: yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 
     - name: Install Docker-CE
-      ansible.builtin.dnf:
-        name: docker-ce
-        nobest: true
-        state: present
-
+      become: true
+      shell: dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 ## Common Items
-- name: docker has been installed
-  become: true
-  shell: docker --version
-  register: cmd_result
-  failed_when: "cmd_result.rc != 0"
-  changed_when: false
+- name: Setup Docker
+  tags: get-docker
 
-- name: create docker local fs directory
-  file:
-    path: "{{ docker.directory }}"
-    mode: 0755
-    state: directory
-
-- name: docker group exists
-  become: true
-  group:
-    name: docker
-    state: present
-
-- name: ansible user a member of the docker group
-  become: true
-  user:
-    name: "{{ ansible_user }}"
-    groups: docker
-    append: yes
-
-- name: create docker network
-  become: true
-  shell: "docker network create {{ docker.network }}"
-
-- name: Docker Service
   block:
-    - name: docker service started
+    - name: docker has been installed?
       become: true
-      service:
-        name: docker
-        state: started
-        enabled: true
+      shell: docker --version
+      register: cmd_result
+      failed_when: "cmd_result.rc != 0"
+      changed_when: false
 
-  rescue:
-    - name: docker service error
+    - name: create docker local fs directory
+      file:
+        path: "{{ docker.directory }}"
+        mode: 0755
+        state: directory
+
+    - name: docker group exists
+      become: true
+      group:
+        name: docker
+        state: present
+
+    - name: ansible user a member of the docker group
+      become: true
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: docker service and permissions
       debug:
         msg: |
-          Docker service is not running.
-          Please check manually.
+          Docker service may need to be started manually.
+          Please also reboot the system for permissions to take effect.
+
+    - name: create docker network
+      become: true
+      shell: "docker network create {{ docker.network }}"
+
+    - name: Docker Service
+      block:
+        - name: docker service started
+          become: true
+          service:
+            name: docker
+            state: started
+            enabled: true
+
+      rescue:
+        - name: docker service error
+          debug:
+            msg: |
+              Docker service is not running.
+              Please check manually.
