@@ -40,23 +40,24 @@ chown ${AN_USER} /home/${AN_USER}/.ssh/authorized_keys || echo "Please add autho
 
 # Install other packages
 # ----------------------------------
-dnf install -y epel-release
+dnf install -y epel-release dnf-automatic
 dnf install -y firewalld fail2ban
-
-# Setup Services
-# ----------------------------------
-systemctl enable fail2ban
-systemctl enable firewalld
-
-# Change sshd port of firewalld
-# ----------------------------------
-sed "/port/{s|22|$AN_PORT|}" /usr/lib/firewalld/services/ssh.xml > /etc/firewalld/services/ssh.xml
 
 # Setup Docker
 # ----------------------------------
 yum install -y yum-utils
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Change sshd port of firewalld
+# ----------------------------------
+sed "/port/{s|22|$AN_PORT|}" /usr/lib/firewalld/services/ssh.xml > /etc/firewalld/services/ssh.xml
+
+# Setup Services
+# ----------------------------------
+systemctl enable fail2ban
+systemctl enable firewalld
+systemctl enable dnf-automatic-install.timer
 systemctl enable docker
 
 echo -e "\nDone! Please reboot and reconnect:"
