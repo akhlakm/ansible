@@ -15,8 +15,8 @@ dnf install -y epel-release git firewalld
 
 # Ansible user account and sshd port
 # ----------------------------------
-read -p "Ansible user name: " AN_USER
-read -p "Ansible SSH port: " AN_PORT
+read -p "Ansible user name [ansible]: " AN_USER
+read -p "Ansible SSH port [22]: " AN_PORT
 
 AN_USER=${AN_USER:-ansible}
 AN_PORT=${AN_PORT:-22}
@@ -30,7 +30,7 @@ echo "%wheel  ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
 useradd ${AN_USER}
 usermod -a -G wheel ${AN_USER}
 
-echo "Please setup a password for the ansible user:"
+echo "Please setup a password for ${AN_USER}:"
 passwd ${AN_USER}
 
 # Setup SSHD
