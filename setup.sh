@@ -7,7 +7,7 @@ read -p "Ansible user name: " AN_USER
 read -p "Ansible SSH port: " AN_PORT
 
 AN_USER=${AN_USER:-ansible}
-AN_PORT=${AN_USER:-22}
+AN_PORT=${AN_PORT:-22}
 
 echo "Setting up system for user: $AN_USER port: $AN_PORT"
 
