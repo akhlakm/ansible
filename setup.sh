@@ -23,6 +23,9 @@ echo "%wheel  ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
 useradd ${AN_USER}
 usermod -a -G wheel ${AN_USER}
 
+echo "Please setup a password for the ansible user:"
+passwd ${AN_USER}
+
 # Make sure sshd installed
 dnf install -y openssh-server
 
@@ -57,8 +60,9 @@ systemctl enable nftables
 systemctl enable sshd
 systemctl enable firewalld
 systemctl enable fail2ban
+
 systemctl disable iptables || echo
 systemctl mask iptables
 
 echo -e "\nDone! Please reboot and reconnect:"
-echo -e "\tssh $AN_USER@$HOST -p $AN_PORT"
+echo -e "\tssh $AN_USER@$HOSTNAME -p $AN_PORT"
