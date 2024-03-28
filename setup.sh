@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## Run as:
-# curl -L https://raw.githubusercontent.com/akhlakm/ansible/main/setup.sh
+# curl -L https://raw.githubusercontent.com/akhlakm/ansible/main/setup.sh | bash
 
 dnf update -y
 
