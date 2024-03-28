@@ -1,6 +1,6 @@
 ---
 - tags: monitoring
-  include: ../container.yml
+  include_tasks: ../container.yml
   vars:
       name: monitoring
       datadir: no

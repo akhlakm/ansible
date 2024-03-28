@@ -1,6 +1,6 @@
 ---
 - tags: nginx-proxy
-  include: ../container.yml
+  include_tasks: ../container.yml
   vars:
     name: nginx-proxy
     datadir: yes

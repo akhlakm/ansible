@@ -1,6 +1,6 @@
 ---
 - tags: telegram
-  include: ../container.yml
+  include_tasks: ../container.yml
   vars:
     name: telegram
     datadir: no

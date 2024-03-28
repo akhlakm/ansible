@@ -1,6 +1,6 @@
 ---
 - tags: postgres
-  include: ../container.yml
+  include_tasks: ../container.yml
   vars:
     name: postgres
     datadir: yes

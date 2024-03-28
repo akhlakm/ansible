@@ -527,6 +527,8 @@ pla () {
 	eval export ${1:-PATH}=`pwd`:\$${1:-PATH}
 }
 
+export PATH=$PATH:~/.local/bin
+
 ffmpeg-compress() {
 	ffmpeg -i "$1" -vcodec h264 -b:v 1000k -acodec mp2 "${2:-compressed.mp4}"
 	# ffmpeg -i "$1" -vcodec libx264 -x264-params crf=18 -preset veryslow -acodec copy "${2:-compressed.mp4}"
