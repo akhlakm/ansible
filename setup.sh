@@ -47,22 +47,24 @@ dnf install -y nftables
 dnf install -y epel-release
 dnf install -y firewalld fail2ban
 
+# Setup Services
+# ----------------------------------
+systemctl enable nftables
+systemctl enable sshd
+systemctl enable fail2ban
+
+systemctl disable iptables || echo
+systemctl mask iptables
+
+systemctl disable firewalld || echo
+systemctl mask firewalld
+
 # Setup Firewall
 # ----------------------------------
 nft add table inet SSHD
 nft 'add chain inet SSHD INPUT { type filter hook input priority 0; }'
 nft add rule inet SSHD INPUT tcp dport $AN_PORT accept
 nft list ruleset | tee -a /etc/sysconfig/nftables.conf
-
-# Setup Services
-# ----------------------------------
-systemctl enable nftables
-systemctl enable sshd
-systemctl enable firewalld
-systemctl enable fail2ban
-
-systemctl disable iptables || echo
-systemctl mask iptables
 
 echo -e "\nDone! Please reboot and reconnect:"
 echo -e "\tssh $AN_USER@$HOSTNAME -p $AN_PORT"
