@@ -18,12 +18,11 @@
     # Install OS specific packages
     - import_tasks: tasks/packages.yml
 
-    # Setup firewall rules and logging
-    - import_tasks: tasks/iptables.yml
-    - import_tasks: tasks/fail2ban.yml
-
     # Install docker
     - import_tasks: tasks/get_docker.yml
+
+    # Setup fail2ban
+    - import_tasks: tasks/fail2ban.yml
 
     # Common tasks
     - import_tasks: tasks/common.yml

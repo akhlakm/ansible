@@ -12,9 +12,11 @@
         mode: 0440
 
     - name: Fail2Ban service
+      become: true
       ansible.builtin.service:
         name: fail2ban
         state: started
+        enabled: yes
 
     - name: Fail2Ban reload
       become: true
@@ -23,7 +25,6 @@
     
     - debug:
         var: output.stdout_lines
-
 
 
 # More details: https://www.plesk.com/blog/various/using-fail2ban-to-secure-your-server/

@@ -32,22 +32,22 @@ Run `ansible-playbook --help` for additional options.
 
 
 ## Initial Setup
-To handover the control to ansible, the following things should be set first
-by logging in using the `root` account.
+To handover the control to ansible, the following intialization should be done first
+by logging into a new machine using the `root` account.
 
 ```sh
-# Edit the sudoers file
-vi /etc/sudoers
+# Update your system
+dnf update
 
 # Enable NOPASSWD for the wheel/root group
-%wheel  ALL=(ALL)       NOPASSWD: ALL
+echo "%wheel  ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
+
+# Change sshd port to <ansible_port>
+echo Port 22 >> /etc/ssh/sshd_config
 
 # Create the ansible user
 useradd <ansible_user>
 usermod -a -G wheel <ansible_user>
-
-# Set a password, empty not allowed for sshd without PAM
-passwd <ansible_user>
 
 # Create ansible user ssh directory
 mkdir /home/<ansible_user>/.ssh
@@ -58,9 +58,18 @@ cp ~/.ssh/authorized_keys /home/<ansible_user>/.ssh/
 # Update permission
 chown <ansible_user> /home/<ansible_user>/.ssh/authorized_keys
 
-# Update your system
-dnf update | apt update
+# Open the <ansible_port>
+nft 'add table inet SSHD'
+nft 'add chain inet SSHD INPUT { type filter hook input priority 0; }'
+nft 'add rule inet SSHD INPUT tcp dport 22 accept'
+nft list ruleset | tee -a /etc/sysconfig/nftables.conf
 
-# Exit and reboot
+systemctl enable nftables
+systemctl mask iptables
+
+# Reboot and exit
 reboot now
 ```
+
+Now update the `ansible_user` and `ansible_port` in `config.yml`
+and run the `server.yml` playbook.
