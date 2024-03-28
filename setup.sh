@@ -34,6 +34,12 @@ cp /root/.ssh/authorized_keys /home/${AN_USER}/.ssh/
 # Update permission
 chown ${AN_USER} /home/${AN_USER}/.ssh/authorized_keys
 
+# Install other packages
+# ----------------------------------
+dnf install -y nftables
+dnf install -y epel-release
+dnf install -y firewalld fail2ban
+
 # Setup Firewall
 # ----------------------------------
 nft add table inet SSHD
@@ -42,8 +48,6 @@ nft add rule inet SSHD INPUT tcp dport $AN_PORT accept
 nft list ruleset | tee -a /etc/sysconfig/nftables.conf
 
 systemctl enable nftables
-
-dnf install -y firewalld fail2ban iptables
 
 systemctl mask iptables
 
