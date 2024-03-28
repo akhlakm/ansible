@@ -1,0 +1,54 @@
+# Ensure docker is installed
+---
+- name: Setup Docker
+  tags: docker
+
+  block:
+    - name: docker has been installed?
+      become: true
+      shell: docker --version
+      register: cmd_result
+      failed_when: "cmd_result.rc != 0"
+      changed_when: false
+
+    - name: create docker local fs directory
+      file:
+        path: "{{ docker.directory }}"
+        mode: 0755
+        state: directory
+
+    - name: docker group exists
+      become: true
+      group:
+        name: docker
+        state: present
+
+    - name: ansible user a member of the docker group
+      become: true
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: reload groups
+      shell: newgrp docker
+
+    - name: Docker Service
+      block:
+        - name: docker service started
+          become: true
+          service:
+            name: docker
+            state: started
+            enabled: true
+
+      rescue:
+        - name: docker service error
+          debug:
+            msg: |
+              Docker service is not running.
+              Please check manually.
+
+    - name: create docker network
+      become: true
+      shell: "docker network create {{ docker.network }}"
