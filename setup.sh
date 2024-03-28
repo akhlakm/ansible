@@ -16,21 +16,24 @@ dnf update -y
 # Enable NOPASSWD for the wheel/root group
 echo "%wheel  ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
 
-# Change sshd port to <ansible_port>
-echo Port $AN_PORT >> /etc/ssh/sshd_config
-
 # Create the ansible user
 useradd ${AN_USER}
 usermod -a -G wheel ${AN_USER}
+
+# Make sure sshd installed
+dnf install -y openssh-server
+
+# Change sshd port to <ansible_port>
+echo Port $AN_PORT >> /etc/ssh/sshd_config
 
 # Create ansible user ssh directory
 mkdir /home/${AN_USER}/.ssh
 
 # Copy the ssh authorized key
-cp /root/.ssh/authorized_keys /home/${AN_USER}/.ssh/
+cp /root/.ssh/authorized_keys /home/${AN_USER}/.ssh/ || echo "No ssh key found"
 
 # Update permission
-chown ${AN_USER} /home/${AN_USER}/.ssh/authorized_keys
+chown ${AN_USER} /home/${AN_USER}/.ssh/authorized_keys || echo "Please add authorized_keys manually"
 
 # Install other packages
 # ----------------------------------

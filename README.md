@@ -36,7 +36,7 @@ To handover the control to ansible, the following intialization should be done f
 by logging into a new machine using the `root` account.
 
 ```sh
-curl -L https://raw.githubusercontent.com/akhlakm/ansible/main/setup.sh | bash
+curl -L https://raw.githubusercontent.com/akhlakm/ansible/main/setup.sh -o /root/setup.sh && bash /root/setup.sh
 ```
 Reboot the system and exit.
 
