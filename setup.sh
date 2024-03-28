@@ -7,8 +7,8 @@ dnf update -y
 
 # Ansible user account and sshd port
 # ----------------------------------
-read -p "Ansible user: " AN_USER
-read -p "Ansible port: " AN_PORT
+read -p "Ansible user name: " AN_USER
+read -p "Ansible SSH port: " AN_PORT
 
 AN_USER=${AN_USER:-ansible}
 AN_PORT=${AN_USER:-22}
