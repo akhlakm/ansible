@@ -5,8 +5,17 @@
     - name: Fail2Ban config
       become: true
       template:
-        src: files/system/fail2ban.j2
+        src: files/system/fail2ban.conf
         dest: "/etc/fail2ban/jail.local"
+        owner: root
+        group: root
+        mode: 0440
+
+    - name: Fail2Ban nginx proxy
+      become: true
+      copy:
+        src: files/system/nginx-proxy-fail2ban.conf
+        dest: "/etc/fail2ban/filter.d/nginx-proxy.conf"
         owner: root
         group: root
         mode: 0440
