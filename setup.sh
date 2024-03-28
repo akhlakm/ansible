@@ -1,9 +1,5 @@
 #!/bin/bash
-
-## Run as:
-# curl -L https://raw.githubusercontent.com/akhlakm/ansible/main/setup.sh | bash
-
-dnf update -y
+set -e
 
 # Ansible user account and sshd port
 # ----------------------------------
@@ -14,6 +10,8 @@ AN_USER=${AN_USER:-ansible}
 AN_PORT=${AN_USER:-22}
 
 echo "Setting up system for user: $AN_USER port: $AN_PORT"
+
+dnf update -y
 
 # Enable NOPASSWD for the wheel/root group
 echo "%wheel  ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
